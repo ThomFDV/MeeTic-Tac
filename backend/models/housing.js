@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const Color = require("./color");
 
 const housingSchema = mongoose.Schema({
-    mainColor: {
+    colorId: {
         type: mongoose.Schema.ObjectId,
         ref: Color,
         required: true

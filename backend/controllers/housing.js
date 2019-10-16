@@ -5,18 +5,20 @@ const Housing = require("../models/housing");
 const Color = require("../models/color");
 
 exports.create = async (req, res) => {
-    const colorId = req.body.color;
+    const color = req.body.mainColor;
     const imgUrl = req.body.url;
-
+    const colorId = mongoose.mongo.ObjectId(color);
     try {
-        const pattern = new Pattern({
+        const housing = new Housing({
             colorId,
             imgUrl
         });
-        await pattern.save(err => {
-            if(err) return res.status(400).send('housing/create: Bad request');
-        });
-        return res.status(201).send("housing/create: Created!");
+        try {
+            await housing.save();
+            return res.status(201).send("housing/create: Created!");
+        } catch(err) {
+            return res.status(400).send('housing/create: Bad request');
+        }
     } catch(err) {
         return res.status(500).send('housing/create: Internal Server Error');
     }
