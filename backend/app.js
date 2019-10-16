@@ -1,9 +1,11 @@
+'use strict';
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const cors = require("cors");
 
 const colorRoutes = require("./routes/color");
+const userRoutes = require("./routes/user");
 const widthRoutes = require("./routes/width");
 const materialRoutes = require("./routes/material");
 const braceletRoutes = require("./routes/bracelet");
@@ -41,7 +43,7 @@ app.use(cors());
 //     next();
 // });
 
-app.use("/", colorRoutes);
+app.use("/user", userRoutes);
 app.use("/width", widthRoutes);
 app.use("/material", materialRoutes);
 app.use("/bracelet", braceletRoutes);
