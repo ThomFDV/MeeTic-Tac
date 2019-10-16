@@ -6,6 +6,13 @@ const cors = require("cors");
 
 const colorRoutes = require("./routes/color");
 const userRoutes = require("./routes/user");
+const widthRoutes = require("./routes/width");
+const materialRoutes = require("./routes/material");
+const braceletRoutes = require("./routes/bracelet");
+const typeRoutes = require("./routes/type");
+const patternRoutes = require("./routes/pattern");
+const housingRoutes = require("./routes/housing");
+const dialRoutes = require("./routes/dial");
 
 const app = express();
 
@@ -36,7 +43,14 @@ app.use(cors());
 //     next();
 // });
 
-app.use("/color", colorRoutes);
 app.use("/user", userRoutes);
+app.use("/width", widthRoutes);
+app.use("/material", materialRoutes);
+app.use("/bracelet", braceletRoutes);
+app.use("/color", colorRoutes);
+app.use("/type", typeRoutes);
+app.use("/pattern", patternRoutes);
+app.use("/housing", housingRoutes);
+app.use("/dial", dialRoutes);
 
 module.exports = app;
