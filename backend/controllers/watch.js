@@ -41,31 +41,35 @@ exports.create = async (req, res) => {
 
 exports.getOne = async (req, res) => {
     const watchId = mongoose.mongo.ObjectId(req.body.watch);
-    const watch = Watch.findById(watchId, (err, result) => {
-        if(err) return null;
-        return result;
-    });
-    if(result != null) {
-        const braceletUrl = Bracelet.findById(watch.braceletId, (err, url) => {
-            if(err) return null;
-            return url;
+    try {
+        const watch = Watch.findById(watchId, (err, result) => {
+            if (err) return null;
+            return result;
         });
-        const dialUrl = Dial.findById(watch.dialId, (err, url) => {
-            if(err) return null;
-            return url;
+        if (result != null) {
+            const braceletUrl = Bracelet.findById(watch.braceletId, (err, url) => {
+                if (err) return null;
+                return url.imgUrl;
+            });
+            const dialUrl = Dial.findById(watch.dialId, (err, url) => {
+                if (err) return null;
+                return url.imgUrl;
+            });
+            const housingUrl = Housing.findById(watch.housingId, (err, url) => {
+                if (err) return null;
+                return url.imgUrl;
+            });
+            return res.status(200).json({
+                braceletUrl,
+                dialUrl,
+                housingUrl,
+                description: watch.description
+            });
+        }
+        return res.status(404).json({
+            message: 'La montre n\'a pas été trouvée'
         });
-        const housingUrl = Housing.findById(watch.housingId, (err, url) => {
-            if(err) return null;
-            return url;
-        });
-        return res.status(200).json({
-            braceletUrl: braceletUrl,
-            dialUrl: dialUrl,
-            housingUrl: housingUrl,
-
-        });
+    } catch(err) {
+        return res.status(400).json(err);
     }
-    return res.status(404).json({
-        message: 'La montre n\'a pas été trouvée'
-    });
 }
