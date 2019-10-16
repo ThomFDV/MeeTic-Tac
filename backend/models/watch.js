@@ -30,6 +30,8 @@ const watchSchema = mongoose.Schema({
         required: false,
         default: null
     }
+}, {
+    timestamps: true
 });
 
 module.exports = mongoose.model("Watch", watchSchema);

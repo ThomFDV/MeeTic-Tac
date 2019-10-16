@@ -20,3 +20,13 @@ exports.create = async (req, res) => {
         return res.json(err).status(400);
     }
 };
+
+function getAllT() {
+    let materialsMap = [];
+    Material.find({}, (err, materials) => {
+       materials.forEach(material => {
+           materialsMap.push(material.label);
+       }) ;
+    });
+    return materialsMap;
+}

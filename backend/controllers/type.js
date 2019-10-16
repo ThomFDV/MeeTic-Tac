@@ -22,3 +22,13 @@ exports.create = async (req, res) => {
         return res.status(500).send('type/create: Internal Server Error');
     }
 };
+
+function getAllT() {
+    let typesMap = [];
+    Type.find({}, (err, types) => {
+        types.forEach(type => {
+            typesMap.push(type.label);
+        });
+    });
+    return typesMap;
+}

@@ -20,3 +20,13 @@ exports.create = async (req, res) => {
         return res.json(err).status(400);
     }
 };
+
+function getAllT() {
+    let widthMap = [];
+    Width.find({}, (err, widths) => {
+       widths.forEach(width => {
+           widthMap.push(width.label);
+       });
+    });
+    return widthMap;
+}
