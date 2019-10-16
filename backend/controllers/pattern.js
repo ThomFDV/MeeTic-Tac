@@ -7,14 +7,12 @@ exports.create = async (req, res) => {
     const typeId = mongoose.mongo.ObjectId(req.body.type);
     const colorId = mongoose.mongo.ObjectId(req.body.color);
     const description = req.body.description;
-    const imgUrl = req.body.url;
 
     try {
         const pattern = new Pattern({
             description,
             colorId,
-            typeId,
-            imgUrl
+            typeId
         });
         try {
             await pattern.save();

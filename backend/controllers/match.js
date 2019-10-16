@@ -24,3 +24,13 @@ exports.create = async (req, res) => {
         return res.status(500).send('watch/create: Internal Server Error');
     }
 }
+
+function getAllUserMatchesT(user_Id) {
+    let matchesMap = {};
+    Match.findBy({userId: user_id}, (err, matches) => {
+        matches.forEach(match => {
+            matchesMap.push(match);
+        });
+    });
+    return matchesMap;
+}

@@ -25,4 +25,16 @@ exports.create = async (req, res) => {
     } catch(err) {
         return res.status(500).send('watch/create: Internal Server Error');
     }
+};
+
+function getOneT(watchId) {
+    return Watch.findById(watchId, (err, watch) => {
+        if(err) return null;
+        return watch;
+    });
+}
+
+exports.getOne = async (req, res) => {
+    const watchId = mongoose.mongo.ObjectId(req.body.watch);
+    
 }

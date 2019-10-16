@@ -12,6 +12,11 @@ const dialSchema = mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: Pattern,
         required: true
+    },
+    imgUrl: {
+        type: String,
+        required: false,
+        default: null
     }
 });
 
