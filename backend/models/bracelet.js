@@ -18,15 +18,18 @@ const braceletSchema = mongoose.Schema({
         required : true
     },
     widthId: {
-        type : Width,
+        type : mongoose.ObjectId,
+        ref : Width,
         required : true
     },
     materialId: {
-        type : Material,
+        type : mongoose.ObjectId,
+        ref : Material,
         required : true
     }/*,
     patternId: {
-        type : Pattern,
+        type : mongoose.ObjectId,
+        ref :  Pattern,
         required : true
     }
     */

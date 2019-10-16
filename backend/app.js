@@ -4,6 +4,9 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 
 const colorRoutes = require("./routes/color");
+const widthRoutes = require("./routes/width");
+const materialRoutes = require("./routes/material");
+const braceletRoutes = require("./routes/bracelet");
 
 const app = express();
 
@@ -35,5 +38,8 @@ app.use(cors());
 // });
 
 app.use("/", colorRoutes);
+app.use("/width", widthRoutes);
+app.use("/material", materialRoutes);
+app.use("/bracelet", braceletRoutes);
 
 module.exports = app;
