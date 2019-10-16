@@ -6,6 +6,7 @@ const cors = require("cors");
 
 const colorRoutes = require("./routes/color");
 const userRoutes = require("./routes/user");
+const eventRoutes = require("./routes/event");
 
 const app = express();
 
@@ -38,5 +39,6 @@ app.use(cors());
 
 app.use("/color", colorRoutes);
 app.use("/user", userRoutes);
+app.use("/event", eventRoutes);
 
 module.exports = app;
