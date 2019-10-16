@@ -18,9 +18,9 @@ exports.create = async (req, res) => {
         });
         try {
             await pattern.save();
-            return res.status(201).send("housing/create: Created!");
+            return res.status(201).send("pattern/create: Created!");
         } catch(err) {
-            return res.status(400).send('housing/create: Bad request');
+            return res.status(400).send('pattern/create: Bad request');
         }
     } catch(err) {
         return res.status(500).send('pattern/create: Internal Server Error');
