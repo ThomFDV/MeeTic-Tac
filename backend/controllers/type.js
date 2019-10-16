@@ -12,10 +12,12 @@ exports.create = async (req, res) => {
             label,
             price
         });
-        await type.save(err => {
-            if (err) return res.status(400).send('type/create: Bad request');
-        });
-        return res.status(201).send("type/create: Created!");
+        try {
+            await type.save();
+            return res.status(201).send("housing/create: Created!");
+        } catch(err) {
+            return res.status(400).send('housing/create: Bad request');
+        }
     } catch (err) {
         return res.status(500).send('type/create: Internal Server Error');
     }

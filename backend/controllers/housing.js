@@ -2,12 +2,10 @@
 
 const mongoose = require("mongoose");
 const Housing = require("../models/housing");
-const Color = require("../models/color");
 
 exports.create = async (req, res) => {
-    const color = req.body.mainColor;
     const imgUrl = req.body.url;
-    const colorId = mongoose.mongo.ObjectId(color);
+    const colorId = mongoose.mongo.ObjectId(req.body.color);
     try {
         const housing = new Housing({
             colorId,
