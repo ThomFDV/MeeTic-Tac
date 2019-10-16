@@ -15,7 +15,7 @@ exports.create = async (req, res) => {
         await material.save(err => {
             if (err) return res.status(400);
         });
-        return res.status(201).send("Created!").end();
+        return res.status(201).send("material/create : Created!").end();
     } catch (err) {
         return res.json(err).status(400);
     }
