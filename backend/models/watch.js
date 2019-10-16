@@ -25,10 +25,10 @@ const watchSchema = mongoose.Schema({
         ref: Housing,
         required: true
     },
-    imgUrl: {
+    description: {
         type: String,
         required: false,
-        default: null
+        default: ""
     }
 }, {
     timestamps: true
