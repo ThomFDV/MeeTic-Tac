@@ -2,11 +2,10 @@
 
 const mongoose = require("mongoose");
 
-const colorSchema = mongoose.Schema({
+const typeSchema = mongoose.Schema({
     label: {
         type: String,
-        required: true,
-        unique: true
+        required: true
     },
     price: {
         type: Number,
@@ -14,4 +13,4 @@ const colorSchema = mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model("Color", colorSchema);
+module.exports = mongoose.model("Type", typeSchema);
