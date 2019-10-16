@@ -1,9 +1,9 @@
 'use strict';
 
 const express = require("express");
-const ColorController = require("../controllers/color");
+const HousingController = require("../controllers/housing");
 const router = express.Router();
 
-router.post("/create", ColorController.create);
+router.post("/create", HousingController.create);
 
 module.exports = router;

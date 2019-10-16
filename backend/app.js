@@ -4,6 +4,10 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 
 const colorRoutes = require("./routes/color");
+const typeRoutes = require("./routes/type");
+const patternRoutes = require("./routes/pattern");
+const housingRoutes = require("./routes/housing");
+const dialRoutes = require("./routes/dial");
 
 const app = express();
 
@@ -34,6 +38,10 @@ app.use(cors());
 //     next();
 // });
 
-app.use("/", colorRoutes);
+app.use("/color", colorRoutes);
+app.use("/type", typeRoutes);
+app.use("/pattern", patternRoutes);
+app.use("/housing", housingRoutes);
+app.use("/dial", dialRoutes);
 
 module.exports = app;

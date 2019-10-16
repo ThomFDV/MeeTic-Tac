@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const mongoose = require("mongoose");
 const Color = require("../models/color");
@@ -13,10 +13,10 @@ exports.create = async (req, res) => {
             price
         });
         await color.save(err => {
-            if (err) return res.status(400);
+            if (err) return res.status(400).send('color/create: Bad request');
         });
-        return res.status(201).send("Created!").end();
+        return res.status(201).send("color/create: Created!").end();
     } catch (err) {
-        return res.json(err).status(400);
+        return res.json(err).status(500).send('color/create: Internal Server Error');
     }
 };
