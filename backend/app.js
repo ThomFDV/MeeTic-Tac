@@ -5,14 +5,14 @@ const cors = require("cors");
 
 const app = express();
 
-mongoose.connect("mongodb+srv://thomfdv:meetic-tac@mainCluster-e8dof.mongodb.net/test?retryWrites=true&w=majority", {
+mongoose.connect("mongodb+srv://admin:QLwDKdjsq9DwsUn3@maincluster-e8dof.mongodb.net/test?retryWrites=true&w=majority", {
                 useCreateIndex: true,
                 useUnifiedTopology: true,
                 useNewUrlParser: true
             }).then(() => {
                 console.log("Connected to database!");
-            }).catch(() => {
-                console.log("Connection failed!");
+            }).catch((err) => {
+                console.log("Connection failed! " + err);
             });
 
 app.use(bodyParser.json());
