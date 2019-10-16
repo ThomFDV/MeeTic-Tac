@@ -3,6 +3,8 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const cors = require("cors");
 
+const colorRoutes = require("./routes/color");
+
 const app = express();
 
 mongoose.connect("mongodb+srv://admin:QLwDKdjsq9DwsUn3@maincluster-e8dof.mongodb.net/test?retryWrites=true&w=majority", {
@@ -31,5 +33,7 @@ app.use(cors());
 //     );
 //     next();
 // });
+
+app.use("/", colorRoutes);
 
 module.exports = app;
