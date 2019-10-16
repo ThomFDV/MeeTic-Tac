@@ -3,4 +3,13 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+
+    <color name="buttonConnexion">#16922323</color>
+    <color name="textButton">#F44336</color>
+    <color name="blanc">#F7F7F7</color>
+    <color name="noir">#333232</color>
+
+    <color name="like">#8BC34A</color>
+    <color name="nolike">#F44336</color>
+
 </resources>

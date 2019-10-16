@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="action_android" type="id" />
+    <item name="navigation" type="id" />
+    <item name="bottom_nav_menu" type="id" />
+</resources>
