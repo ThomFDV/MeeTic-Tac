@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const Width = require("../models/width");
 const Material = require("../models/material");
-//const Pattern = required("../models/pattern");
+const Pattern = require("../models/pattern");
 
 const braceletSchema = mongoose.Schema({
     length: {
@@ -26,13 +26,13 @@ const braceletSchema = mongoose.Schema({
         type : mongoose.Schema.ObjectId,
         ref : Material,
         required : true
-    }/*,
+    },
     patternId: {
         type : mongoose.Schema.ObjectId,
         ref :  Pattern,
         required : true
     }
-    */
+
 });
 
 module.exports = mongoose.model("Bracelet", braceletSchema);
