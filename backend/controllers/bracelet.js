@@ -7,9 +7,9 @@ exports.create = async (req, res) => {
     const length = req.body.length;
     const price = req.body.price;
     const imgUrl = req.body.imgUrl;
-    const widthId = req.body.widthId;
-    const materialId = req.body.materialId;
-    /*const patternId = req.body.patternId;*/
+    const widthId = mongoose.mongo.ObjectId(req.body.widthId);
+    const materialId = mongoose.mongo.ObjectId(req.body.materialId);
+    /*const patternId = mongoose.mongo.ObjectId(req.body.patternId);*/
 
     try {
         const bracelet = new Bracelet({
