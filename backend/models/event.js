@@ -10,6 +10,11 @@ const participantSchema = mongoose.Schema({
         ref: User,
         required: true
     },
+    userEmail: {
+        type: String,
+        ref: User,
+        required: true
+    },
     enableNotification: {
         type: Boolean,
         required: true
