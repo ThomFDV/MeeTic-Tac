@@ -25,7 +25,7 @@ exports.matchesArePresent = (userId) => {
 };
 
 exports.getNextMatch = (userId, matches) => {
-    this.initTabs(userId);
+    initTabs(userId);
     matches.forEach(match => {
         if(match.isLiked) {
             likedWatchs[userId] = this.buildTabs(match, likedWatchs[userId]);
@@ -171,6 +171,8 @@ async function generateQuery(likes, dislikes) {
     const braceletType = defineTypeScore(likes.bracelet.type, dislikes.bracelet.type);
     const braceletWidth = defineWidthScore(likes.bracelet.width, dislikes.bracelet.width);
     const braceletMaterial = defineMaterialScore(likes.bracelet.material, dislikes.bracelet.material);
+    let patterns = {};
+    patterns.dial = Pattern.find({mainColor})
 }
 
 function defineColorScore(tLikes, tDislikes) {
