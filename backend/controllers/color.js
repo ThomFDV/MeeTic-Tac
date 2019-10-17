@@ -22,3 +22,13 @@ exports.create = async (req, res) => {
         return res.json(err).status(500).send('color/create: Internal Server Error');
     }
 };
+
+exports.getAllT = () => {
+    let colorsMap = [];
+    Color.find({}, (err, colors) => {
+        colors.forEach(color => {
+            colorsMap.push(color.label);
+        });
+    });
+    return colorsMap;
+}

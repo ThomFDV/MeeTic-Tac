@@ -9,7 +9,7 @@ exports.create = async (req, res) => {
     const imgUrl = req.body.imgUrl;
     const widthId = mongoose.mongo.ObjectId(req.body.widthId);
     const materialId = mongoose.mongo.ObjectId(req.body.materialId);
-    /*const patternId = mongoose.mongo.ObjectId(req.body.patternId);*/
+    const patternId = mongoose.mongo.ObjectId(req.body.patternId);
 
     try {
         const bracelet = new Bracelet({
@@ -17,13 +17,13 @@ exports.create = async (req, res) => {
             price,
             imgUrl,
             widthId,
-            materialId/*,
-            patternId*/
+            materialId,
+            patternId
         });
         await bracelet.save(err => {
             if (err) return res.status(400);
         });
-        return res.status(201).send("Created!").end();
+        return res.status(201).send("bracelet/create: Created!").end();
     } catch (err) {
         return res.json(err).status(400);
     }
@@ -35,7 +35,7 @@ exports.update = async (req, res) => {
     const imgUrl = req.body.imgUrl;
     const widthId = req.body.widthId;
     const materialId = req.body.materialId;
-    /*const patternId = req.body.patternId;*/
+    const patternId = req.body.patternId;
 
     try {
         const bracelet = new Bracelet({
@@ -43,13 +43,13 @@ exports.update = async (req, res) => {
             price,
             imgUrl,
             widthId,
-            materialId/*,
-            patternId*/
+            materialId,
+            patternId
         });
         await bracelet.save(err => {
             if (err) return res.status(400);
         });
-        return res.status(201).send("Updated!").end();
+        return res.status(201).send("bracelet/update : Updated!").end();
     } catch (err) {
         return res.json(err).status(400);
     }

@@ -18,11 +18,6 @@ const patternSchema = mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: Type,
         required: true
-    },
-    imgUrl: {
-        type: String,
-        required: false,
-        default: null
     }
 });
 

@@ -15,8 +15,18 @@ exports.create = async (req, res) => {
         await width.save(err => {
             if (err) return res.status(400);
         });
-        return res.status(201).send("Created!").end();
+        return res.status(201).send("width/create : Created!").end();
     } catch (err) {
         return res.json(err).status(400);
     }
 };
+
+exports.getAllT = () => {
+    let widthMap = [];
+    Width.find({}, (err, widths) => {
+       widths.forEach(width => {
+           widthMap.push(width.label);
+       });
+    });
+    return widthMap;
+}
