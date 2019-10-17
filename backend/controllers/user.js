@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 
 exports.createUser = (req, res, next) => {
+console.log(req.body);
     bcrypt.hash(req.body.password, 10).then(hash => {
     const user = new User({
         email: req.body.email,
@@ -13,6 +14,7 @@ exports.createUser = (req, res, next) => {
         password: hash,
         isAdmin: false,
     });
+    console.log(user);
     user.save()
         .then(result => {
             res.status(201).json({
