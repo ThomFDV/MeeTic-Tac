@@ -33,7 +33,7 @@ exports.getNextMatch = (userId, matches) => {
             dislikedWatchs[userId] = this.buildTabs(match, dislikedWatchs[userId]);
         }
     });
-
+    generateQuery(likedWatchs[userId], dislikedWatchs[userId]);
 };
 
 function initTabs(userId) {
@@ -163,6 +163,16 @@ exports.getWatch = async (watchId) => {
     return watch;
 }
 
+async function generateQuery(likes, dislikes) {
+    const housingColor = defineColorScore(likes.housing.color, dislikes.housing.color);
+    const dialColor = defineColorScore(likes.dial.color, dislikes.dial.color);
+    const dialType = defineTypeScore(likes.dial.type, dislikes.dial.type);
+    const braceletColor = defineColorScore(likes.bracelet.color, dislikes.bracelet.color);
+    const braceletType = defineTypeScore(likes.bracelet.type, dislikes.bracelet.type);
+    const braceletWidth = defineWidthScore(likes.bracelet.width, dislikes.bracelet.width);
+    const braceletMaterial = defineMaterialScore(likes.bracelet.material, dislikes.bracelet.material);
+}
+
 function defineColorScore(tLikes, tDislikes) {
     const colorsList = ColorController.getAllT();
     let totalLikes = tLikes.reduce((acc, curr) => acc + curr);
@@ -208,7 +218,7 @@ function defineTypeScore(tLikes, tDislikes) {
     let typesQuery = [ratios[0].type, ratios[1].type];
     i = undefined;
     while(i === undefined) {
-        let rand = Math.floor(Math.random() * Math.floor(colorsList.length));
+        let rand = Math.floor(Math.random() * Math.floor(typesList.length));
         i = typesQuery.find(el => {
             return el === typesList[rand];
         });
@@ -235,7 +245,7 @@ function defineWidthScore(tLikes, tDislikes) {
     let widthsQuery = [ratios[0].width, ratios[1].width];
     i = undefined;
     while(i === undefined) {
-        let rand = Math.floor(Math.random() * Math.floor(colorsList.length));
+        let rand = Math.floor(Math.random() * Math.floor(widthsList.length));
         i = widthsQuery.find(el => {
             return el === widthsList[rand];
         });
@@ -245,5 +255,28 @@ function defineWidthScore(tLikes, tDislikes) {
 }
 
 function defineMaterialScore(tLikes, tDislikes) {
-
+    const materialsList = MaterialController.getAllT();
+    let totalLikes = tLikes.reduce((acc, curr) => acc + curr);
+    let totalDislikes = tDislikes.reduce((acc, curr) => acc + curr);
+    if(totalLikes == 0) totalLikes = 1;
+    if(totalDislikes == 0) totalDislikes = 1;
+    let ratios = [];
+    let i = 0;
+    materialsList.forEach(m => {
+        ratios[i++] = {
+            value: ((tLikes[m] * 100) / totalLikes) - ((tDislikes[m] * 100) / totalDislikes),
+            material: m
+        }
+    });
+    ratios.sort((a, b) => a.value - b.value);
+    let materialsQuery = [ratios[0].material, ratios[1].material];
+    i = undefined;
+    while(i === undefined) {
+        let rand = Math.floor(Math.random() * Math.floor(materialsList.length));
+        i = materialsQuery.find(el => {
+            return el === materialsList[rand];
+        });
+    }
+    materialsQuery.push(materialsList[rand]);
+    return materialsQuery;
 }
