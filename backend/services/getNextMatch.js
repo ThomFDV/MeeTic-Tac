@@ -65,20 +65,15 @@ function initTabs(userId) {
     });
 }
 
-exports.buildTabs = (match, tab) => {
+exports.buildTabs = async (match, tab) => {
     try {
-        const result = Watch.findById(match.watchId, 'braceletId dialId housingId', err => {
-            if(err) {
-                console.log('Raté');
-                return tab;
-            }
-        });
+        const result = Watch.findById(match.watchId, 'braceletId dialId housingId');
         try {
-            tab = getPatternInfos(result.dialId, 'dial', tab);
-            tab = getPatternInfos(result.braceletId, 'bracelet', tab);
-            tab = getWidth(result.braceletId, tab);
-            tab = getMaterial(result.braceletId, tab);
-            tab = getColor(result.housingId, 'housing', tab);
+            tab = await getPatternInfos(result.dialId, 'dial', tab);
+            tab = await getPatternInfos(result.braceletId, 'bracelet', tab);
+            tab = await getWidth(result.braceletId, tab);
+            tab = await getMaterial(result.braceletId, tab);
+            tab = await getColor(result.housingId, 'housing', tab);
         } catch(err) {
             console.log(err);
             return tab;
@@ -90,61 +85,25 @@ exports.buildTabs = (match, tab) => {
     return tab;
 };
 
-function getPatternInfos(componentId, componentName, tab) {
+async function getPatternInfos(componentId, componentName, tab) {
     let patternId = null;
     if(componentName === 'dial') {
-        patternId = Dial.findById(componentId, 'patternId', (err, id) => {
-            if(err) {
-                console.log(err);
-                return null;
-            }
-            return id;
-        });
+        patternId = await Dial.findById(componentId, 'patternId');
     } else {
-        patternId = Bracelet.findById(componentId, 'patternId', (err, id) => {
-            if(err) {
-                console.log(err);
-                return null;
-            }
-            return id;
-        });
+        patternId = await Bracelet.findById(componentId, 'patternId');
     }
-    const colorId = Pattern.findById(patternId, 'mainColor', (err, id) => {
-        if(err) {
-            console.log(err);
-            return null;
-        }
-        return id;
-    });
-    tab = getColor(colorId, tab, componentName);
-    const typeId = Pattern.findById(patternId, 'patternType', (err, id) => {
-        if(err) {
-            console.log(err);
-            return null;
-        }
-        return id;
-    });
-    tab = getType(typeId, tab, componentName);
+    const colorId = await Pattern.findById(patternId, 'mainColor');
+    tab = await getColor(colorId, tab, componentName);
+    const typeId = await Pattern.findById(patternId, 'patternType');
+    tab = await getType(typeId, tab, componentName);
     return tab;
 }
 
-function getColor(colorId, tab, componentName) {
+async function getColor(colorId, tab, componentName) {
     if(componentName === 'housing') {
-        colorId = Housing.findById(colorId, (err, id) => {
-            if(err) {
-                console.log(err);
-                return null;
-            }
-            return id;
-        });
+        colorId = await Housing.findById(colorId, 'colorId');
     }
-    const colorLabel = Color.findById(colorId, 'label', (err, label) => {
-        if(err) {
-            console.log(err);
-            return null;
-        }
-        return label;
-    });
+    const colorLabel = await Color.findById(colorId, 'label');
     if(componentName === 'dial') {
         tab.dial.color[colorLabel] += 1;
     } else if(componentName === 'bracelet'){
@@ -155,14 +114,8 @@ function getColor(colorId, tab, componentName) {
     return tab;
 }
 
-function getType(typeId, tab, componentName) {
-    const typeLabel = Type.findById(colorId, 'label', (err, label) => {
-        if(err) {
-            console.log(err);
-            return null;
-        }
-        return label;
-    });
+async function getType(typeId, tab, componentName) {
+    const typeLabel = await Type.findById(colorId, 'label');
     if(componentName === 'dial') {
         tab.dial.type[typeLabel] += 1;
     } else {
@@ -171,129 +124,34 @@ function getType(typeId, tab, componentName) {
     return tab;
 }
 
-function getWidth(braceletId, tab) {
-    const widthId = Bracelet.findById(braceletId, 'widthId', (err, id) => {
-        if(err) {
-            console.log(err);
-            return null;
-        }
-        return id;
-    });
-    const widthLabel = Width.findById(widthId, 'label', (err, label) => {
-        if(err) {
-            console.log(err);
-            return null;
-        }
-        return label;
-    });
+async function getWidth(braceletId, tab) {
+    const widthId = await Bracelet.findById(braceletId, 'widthId');
+    const widthLabel = await Width.findById(widthId, 'label');
     tab.bracelet.width[widthLabel] += 1;
     return tab;
 }
 
-function getMaterial(braceletId, tab) {
-    const materialId = Bracelet.findById(materialId, 'materialId', (err, id) => {
-        if(err) {
-            console.log(err);
-            return null;
-        }
-        return id;
-    });
-    const materialLabel = Material.findById(materialId, 'label', (err, label) => {
-        if(err) {
-            console.log(err);
-            return null;
-        }
-        return label;
-    });
+async function getMaterial(braceletId, tab) {
+    const materialId = await Bracelet.findById(materialId, 'materialId');
+    const materialLabel = await Material.findById(materialId, 'label');
     tab.bracelet.material[materialLabel] += 1;
     return tab;
 }
 
-function defineColorScore(tLikes, tDislikes) {
-    const colorsList = ColorController.getAllT();
-    let totalLikes = tLikes.reduce((acc, curr) => acc + curr);
-    let totalDislikes = tDislikes.reduce((acc, curr) => acc + curr);
-    if(totalLikes == 0) totalLikes = 1;
-    if(totalDislikes == 0) totalDislikes = 1;
-    let ratios = [];
-    colorsList.forEach(color => {
-        ratios[color] = ((tLikes[color] * 100) / totalLikes) - ((tDislikes[color] * 100) / totalDislikes)
-    });
-}
-
-exports.getWatch = (watchId) => {
+exports.getWatch = async (watchId) => {
     const watch = {};
-    const result = Watch.findById(watchId, err => {
-        if(err) {
-            console.log('Raté');
-            return tab;
-        }
-    });
-    const dialPatternId = Dial.findById(result.dialId, 'patternId', (err, id) => {
-        if(err) {
-            console.log(err);
-            return null;
-        }
-        return id;
-    });
-    const braceletPatternId = Bracelet.findById(result.braceletId, 'patternId', (err, id) => {
-        if(err) {
-            console.log(err);
-            return null;
-        }
-        return id;
-    });
-    const housingColorId = Housing.findById(result.housingId, 'colorId', (err, id) => {
-        if(err) {
-            console.log(err);
-            return null;
-        }
-        return id;
-    });
-    watch.housing.color = Color.findById(housingColorId, 'label', (err, label) => {
-        if(err) {
-            console.log(err);
-            return null;
-        }
-        return label;
-    });
-    watch.bracelet.width = Width.findById(result.braceletId, 'label', (err, label) => {
-        if(err) {
-            console.log(err);
-            return null;
-        }
-        return label;
-    });
-    watch.bracelet.material = Material.findById(result.braceletId, 'label', (err, label) => {
-        if(err) {
-            console.log(err);
-            return null;
-        }
-        return label;
-    });
+    const result = await Watch.findById(watchId);
+    const dialPatternId = await Dial.findById(result.dialId, 'patternId');
+    const braceletPatternId = await Bracelet.findById(result.braceletId, 'patternId');
+    const housingColorId = await Housing.findById(result.housingId, 'colorId');
+    watch.housing.color = await Color.findById(housingColorId, 'label');
+    watch.bracelet.width = await Width.findById(result.braceletId, 'label');
+    watch.bracelet.material = await Material.findById(result.braceletId, 'label');
     const temp = [braceletPatternId, dialPatternId];
     for(let i = 0; i < temp.length; i++) {
-        const ids = Pattern.findById(temp[i], 'mainColor, patternType', (err, val) => {
-            if(err) {
-                console.log(err);
-                return null;
-            }
-            return val;
-        });
-        const colorLabel = Color.findById(ids.mainColor, 'label', (err, label) => {
-            if(err) {
-                console.log(err);
-                return null;
-            }
-            return label;
-        });
-        const typeLabel = Type.findById(ids.patternType, 'label', (err, label) => {
-            if(err) {
-                console.log(err);
-                return null;
-            }
-            return label;
-        });
+        const ids = await Pattern.findById(temp[i], 'mainColor, patternType');
+        const colorLabel = await Color.findById(ids.mainColor, 'label');
+        const typeLabel = await Type.findById(ids.patternType, 'label');
         if(i == 0) {
             watch.bracelet.color = colorLabel;
             watch.bracelet.type = typeLabel;
@@ -305,12 +163,85 @@ exports.getWatch = (watchId) => {
     return watch;
 }
 
-function defineTypeScore(tLikes, tDislikes) {
+function defineColorScore(tLikes, tDislikes) {
+    const colorsList = ColorController.getAllT();
+    let totalLikes = tLikes.reduce((acc, curr) => acc + curr);
+    let totalDislikes = tDislikes.reduce((acc, curr) => acc + curr);
+    if(totalLikes == 0) totalLikes = 1;
+    if(totalDislikes == 0) totalDislikes = 1;
+    let ratios = [];
+    let i = 0;
+    colorsList.forEach(c => {
+        ratios[i++] = {
+            value: ((tLikes[c] * 100) / totalLikes) - ((tDislikes[c] * 100) / totalDislikes),
+            color: c
+        }
+    });
+    ratios.sort((a, b) => a.value - b.value);
+    let colorsQuery = [ratios[0].color, ratios[1].color];
+    i = undefined;
+    while(i === undefined) {
+        let rand = Math.floor(Math.random() * Math.floor(colorsList.length));
+        i = colorsQuery.find(el => {
+            return el === colorsList[rand];
+        });
+    }
+    colorsQuery.push(colorsList[rand]);
+    return colorsQuery;
+}
 
+function defineTypeScore(tLikes, tDislikes) {
+    const typesList = TypeController.getAllT();
+    let totalLikes = tLikes.reduce((acc, curr) => acc + curr);
+    let totalDislikes = tDislikes.reduce((acc, curr) => acc + curr);
+    if(totalLikes == 0) totalLikes = 1;
+    if(totalDislikes == 0) totalDislikes = 1;
+    let ratios = [];
+    let i = 0;
+    typesList.forEach(t => {
+        ratios[i++] = {
+            value: ((tLikes[t] * 100) / totalLikes) - ((tDislikes[t] * 100) / totalDislikes),
+            type: t
+        }
+    });
+    ratios.sort((a, b) => a.value - b.value);
+    let typesQuery = [ratios[0].type, ratios[1].type];
+    i = undefined;
+    while(i === undefined) {
+        let rand = Math.floor(Math.random() * Math.floor(colorsList.length));
+        i = typesQuery.find(el => {
+            return el === typesList[rand];
+        });
+    }
+    typesQuery.push(typesList[rand]);
+    return typesQuery;
 }
 
 function defineWidthScore(tLikes, tDislikes) {
-
+    const widthsList = WidthController.getAllT();
+    let totalLikes = tLikes.reduce((acc, curr) => acc + curr);
+    let totalDislikes = tDislikes.reduce((acc, curr) => acc + curr);
+    if(totalLikes == 0) totalLikes = 1;
+    if(totalDislikes == 0) totalDislikes = 1;
+    let ratios = [];
+    let i = 0;
+    widthsList.forEach(w => {
+        ratios[i++] = {
+            value: ((tLikes[w] * 100) / totalLikes) - ((tDislikes[w] * 100) / totalDislikes),
+            width: w
+        }
+    });
+    ratios.sort((a, b) => a.value - b.value);
+    let widthsQuery = [ratios[0].width, ratios[1].width];
+    i = undefined;
+    while(i === undefined) {
+        let rand = Math.floor(Math.random() * Math.floor(colorsList.length));
+        i = widthsQuery.find(el => {
+            return el === widthsList[rand];
+        });
+    }
+    widthsQuery.push(widthsList[rand]);
+    return widthsQuery;
 }
 
 function defineMaterialScore(tLikes, tDislikes) {

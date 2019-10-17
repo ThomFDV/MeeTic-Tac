@@ -7,7 +7,7 @@ const WatchController = require("../controllers/watch");
 const NextMatchService = require("../services/getNextMatch");
 
 exports.create = async (req, res) => {
-    const userId = mongoose.mongo.ObjectId(req.body.userId);
+    const userId = mongoose.mongo.ObjectId(req.user.userId);
     const watchId = mongoose.mongo.ObjectId(req.body.watchId);
     const isLiked = req.body.isLiked;
 
