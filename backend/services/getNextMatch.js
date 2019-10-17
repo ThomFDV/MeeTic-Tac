@@ -28,21 +28,19 @@ exports.getNextMatch = async (userId, matches) => {
     await initTabs(userId);
     matches.forEach(async match => {
         if(match.isLiked) {
-            likedWatchs[userId] = await buildTabs(match, likedWatchs[userId]);
+            likedWatchs[userId] = await this.buildTabs(match, likedWatchs[userId]);
         } else {
-            dislikedWatchs[userId] = await buildTabs(match, dislikedWatchs[userId]);
+            dislikedWatchs[userId] = await this.buildTabs(match, dislikedWatchs[userId]);
         }
     });
-    console.log(likedWatchs[userId] + "\n=========liked===========\n");
-    console.log(dislikedWatchs[userId] + "\n=========disliked===========\n");
     generateQuery(likedWatchs[userId], dislikedWatchs[userId]);
 };
 
 async function initTabs(userId) {
-    const colors = ColorController.getAllT();
-    const types = TypeController.getAllT();
-    const materials = MaterialController.getAllT();
-    const widths = WidthController.getAllT();
+    const colors = await ColorController.getAllT();
+    const types = await TypeController.getAllT();
+    const materials = await MaterialController.getAllT();
+    const widths = await WidthController.getAllT();
     likedWatchs[userId] = {
         housing: {
             color: {}
@@ -97,7 +95,7 @@ async function initTabs(userId) {
     });
 }
 
-async function buildTabs(match, tab) {
+exports.buildTabs = async (match, tab) => {
     try {
         const result = await Watch.findById(match.watchId);
         try {
@@ -127,7 +125,6 @@ async function getPatternInfos(componentId, componentName, tab) {
     }
     const colorId = await Pattern.findById(patternId.patternId, 'mainColor');
     tab = await getColor(colorId.mainColor, componentName, tab);
-    console.log("ça passseeeeee");
     const typeId = await Pattern.findById(patternId, 'patternType');
     tab = await getType(typeId, tab, componentName);
     return tab;
@@ -139,7 +136,6 @@ async function getColor(colorId, componentName, tab) {
     }
     const colorLabel = await Color.findById(colorId, 'label');
     if(componentName === 'dial') {
-        console.log("\nrentre dans le dial de getColor\n");
         console.log(JSON.stringify(tab));
         tab.dial.color[colorLabel] += 1;
     } else if(componentName === 'bracelet'){
@@ -211,8 +207,8 @@ async function generateQuery(likes, dislikes) {
     patterns.dial = Pattern.find({mainColor});
 }
 
-function defineColorScore(tLikes, tDislikes) {
-    const colorsList = ColorController.getAllT();
+async function defineColorScore(tLikes, tDislikes) {
+    const colorsList = await ColorController.getAllT();
     let totalLikes = 0;
     for(let color in tLikes) {
         totalLikes += color;
@@ -227,10 +223,11 @@ function defineColorScore(tLikes, tDislikes) {
     let ratios = [];
     let i = 0;
     colorsList.forEach(c => {
-        ratios[i++] = {
+        ratios[i] = {
             value: ((tLikes[c] * 100) / totalLikes) - ((tDislikes[c] * 100) / totalDislikes),
             color: c
-        }
+        };
+        i += 1;
     });
     ratios.sort((a, b) => a.value - b.value);
     let colorsQuery = [ratios[0].color, ratios[1].color];
@@ -240,15 +237,22 @@ function defineColorScore(tLikes, tDislikes) {
         i = colorsQuery.find(el => {
             return el === colorsList[rand];
         });
+        i = i === undefined ? undefined : rand;
     }
-    colorsQuery.push(colorsList[rand]);
+    colorsQuery.push(colorsList[i]);
     return colorsQuery;
 }
 
-function defineTypeScore(tLikes, tDislikes) {
-    const typesList = TypeController.getAllT();
-    let totalLikes = tLikes.reduce((acc, curr) => acc + curr);
-    let totalDislikes = tDislikes.reduce((acc, curr) => acc + curr);
+async function defineTypeScore(tLikes, tDislikes) {
+    const typesList = await TypeController.getAllT();
+    let totalLikes = 0;
+    for(let type in tLikes) {
+        totalLikes += type;
+    }
+    let totalDislikes = 0;
+    for(let type in tDislikes) {
+        totalDislikes += type;
+    }
     if(totalLikes == 0) totalLikes = 1;
     if(totalDislikes == 0) totalDislikes = 1;
     let ratios = [];
@@ -267,15 +271,22 @@ function defineTypeScore(tLikes, tDislikes) {
         i = typesQuery.find(el => {
             return el === typesList[rand];
         });
+        i = i === undefined ? undefined : rand;
     }
-    typesQuery.push(typesList[rand]);
+    typesQuery.push(typesList[i]);
     return typesQuery;
 }
 
-function defineWidthScore(tLikes, tDislikes) {
-    const widthsList = WidthController.getAllT();
-    let totalLikes = tLikes.reduce((acc, curr) => acc + curr);
-    let totalDislikes = tDislikes.reduce((acc, curr) => acc + curr);
+async function defineWidthScore(tLikes, tDislikes) {
+    const widthsList = await WidthController.getAllT();
+    let totalLikes = 0;
+    for(let type in tLikes) {
+        totalLikes += type;
+    }
+    let totalDislikes = 0;
+    for(let type in tDislikes) {
+        totalDislikes += type;
+    }
     if(totalLikes == 0) totalLikes = 1;
     if(totalDislikes == 0) totalDislikes = 1;
     let ratios = [];
@@ -294,15 +305,22 @@ function defineWidthScore(tLikes, tDislikes) {
         i = widthsQuery.find(el => {
             return el === widthsList[rand];
         });
+        i = i === undefined ? undefined : rand;
     }
-    widthsQuery.push(widthsList[rand]);
+    widthsQuery.push(widthsList[i]);
     return widthsQuery;
 }
 
-function defineMaterialScore(tLikes, tDislikes) {
-    const materialsList = MaterialController.getAllT();
-    let totalLikes = tLikes.reduce((acc, curr) => acc + curr);
-    let totalDislikes = tDislikes.reduce((acc, curr) => acc + curr);
+async function defineMaterialScore(tLikes, tDislikes) {
+    const materialsList = await MaterialController.getAllT();
+    let totalLikes = 0;
+    for(let type in tLikes) {
+        totalLikes += type;
+    }
+    let totalDislikes = 0;
+    for(let type in tDislikes) {
+        totalDislikes += type;
+    }
     if(totalLikes == 0) totalLikes = 1;
     if(totalDislikes == 0) totalDislikes = 1;
     let ratios = [];
@@ -321,7 +339,8 @@ function defineMaterialScore(tLikes, tDislikes) {
         i = materialsQuery.find(el => {
             return el === materialsList[rand];
         });
+        i = i === undefined ? undefined : rand;
     }
-    materialsQuery.push(materialsList[rand]);
+    materialsQuery.push(materialsList[i]);
     return materialsQuery;
 }
