@@ -16,7 +16,8 @@
 
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="170dp"
+            android:layout_marginTop="50dp"
+            android:layout_height="150dp"
             android:foregroundGravity="center_horizontal"
             android:src="@drawable/logoaugarde" />
 
@@ -25,7 +26,7 @@
             xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/colorPrimary"
+            android:background="@color/cardview_light_background"
             android:orientation="vertical"
             tools:context=".MatchActivity">
 
@@ -56,7 +57,7 @@
                 android:layout_width="150dp"
                 android:layout_height="50dp"
                 android:background="@color/nolike"
-                android:text="DISLIKE"
+                android:text="J'aime pas"
                 android:textColor="@color/noir"
                 app:layout_constraintEnd_toStartOf="@+id/activity_match_like_button"
                 app:layout_constraintStart_toStartOf="parent"
@@ -69,7 +70,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
                 android:background="@color/like"
-                android:text="LIKE"
+                android:text="J'aime"
                 android:textColor="@color/noir"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/activity_match_dislike_button"
@@ -109,17 +110,6 @@
             app:layout_constraintRight_toRightOf="parent"
             app:menu="@menu/bottom_nav_menu" />
 
-        <fragment
-            android:id="@+id/nav_host_fragment"
-            android:name="androidx.navigation.fragment.NavHostFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:defaultNavHost="true"
-            app:layout_constraintBottom_toTopOf="@id/nav_view"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:navGraph="@navigation/mobile_navigation" />
 
     </android.support.constraint.ConstraintLayout>
 

@@ -28,6 +28,7 @@ public class HomeActivity extends AppCompatActivity {
         buttonInscription.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 Intent i = new Intent(HomeActivity.this, InscriptionActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(i);
             }
         });

@@ -17,6 +17,7 @@ public class MatchActivity extends AppCompatActivity {
     private Button activity_match_dislike_button;
     private Button activity_match_like_button;
     private TextView activity_match_empty_tv;
+    private BottomNavigationView nav_view;
 
 
     @Override
@@ -30,35 +31,40 @@ public class MatchActivity extends AppCompatActivity {
         activity_match_like_button=findViewById(R.id.activity_match_like_button);
         activity_match_empty_tv=findViewById(R.id.activity_match_empty_tv);
 
-        //BottomNavigationView bottom_nav_menu = (BottomNavigationView) findViewById(R.id.bottom_nav_menu);
-        //bottom_nav_menu.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        nav_view=findViewById(R.id.nav_view);
+
+
+        BottomNavigationView bottom_nav_menu = (BottomNavigationView) findViewById(R.id.nav_view);
+        bottom_nav_menu.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+
+
 
     }
 
-    /*private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    System.out.println("Bienvenu sur java");
                     break;
                 case R.id.navigation_edit:
-                    System.out.println("Bienvenu sur java");
-                   //Intent a = new Intent(MatchActivity.this,PersonalisationActivity.class);
-                    //startActivity(a);
+                    Intent a = new Intent(MatchActivity.this, PersonalisationActivity.class);
+                    a.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(a);
                     break;
                 case R.id.navigation_event:
-                    System.out.println("Bienvenu sur java.mesexemples.com");
-                    //Intent b = new Intent(MatchActivity.this,EventUserActivity.class);
-                    //startActivity(b);
+                    Intent b = new Intent(MatchActivity.this,EventUserActivity.class);
+                    b.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(b);
                     break;
 
             }
-            return false;
+            return true;
         }
 
-    };*/
+    };
 
 
 }

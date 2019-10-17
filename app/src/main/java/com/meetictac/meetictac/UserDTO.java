@@ -2,7 +2,7 @@ package com.meetictac.meetictac;
 
 import com.google.gson.annotations.SerializedName;
 
-public class InscriptionDTO {
+public class UserDTO {
 
     @SerializedName("firstname")
     private String firstname;
@@ -13,9 +13,13 @@ public class InscriptionDTO {
     @SerializedName("password")
     private String password;
 
-    public InscriptionDTO(String u, String n, String p){
+    @SerializedName("email")
+    private String email;
+
+    public UserDTO(String u, String n, String e, String p){
         this.firstname = u;
         this.lastname = n;
+        this.email = e;
         this.password = p;
     }
 
@@ -41,5 +45,13 @@ public class InscriptionDTO {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

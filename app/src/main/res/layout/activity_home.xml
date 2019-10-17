@@ -9,7 +9,8 @@
 
     <ImageView
         android:layout_width="wrap_content"
-        android:layout_height="153dp"
+        android:layout_marginTop="50dp"
+        android:layout_height="150dp"
         android:src="@drawable/logoaugarde" />
 
     <Button
@@ -17,22 +18,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="100dp"
         android:layout_marginRight="20dp"
-        android:background="@color/buttonConnexion"
-        android:text="@string/connexion"
-        android:textColor="@color/textButton" />
+        android:background="#2E2B2B"
+        android:text="Connexion"
+        android:textColor="#FCFCFC" />
 
     <Button
         android:id="@+id/buttonInscription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="40dp"
         android:layout_marginRight="20dp"
-        android:background="@color/buttonConnexion"
-        android:text="@string/inscription"
-        android:textColor="@color/textButton" />
+        android:background="#2E2B2B"
+        android:text="Inscription"
+        android:textColor="#FCFCFC" />
 
 
 </LinearLayout>
