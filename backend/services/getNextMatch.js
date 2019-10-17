@@ -14,7 +14,7 @@ const Type = require('../models/type');
 const Material = require('../models/material');
 const Width = require('../models/width');
 const Pattern = require('../models/pattern');
-const Watch = require('../models/material');
+const Watch = require('../models/watch');
 
 let likedWatchs = {};
 let dislikedWatchs = {};
@@ -67,8 +67,9 @@ function initTabs(userId) {
 
 exports.buildTabs = async (match, tab) => {
     try {
-        const result = Watch.findById(match.watchId, 'braceletId dialId housingId');
+        const result = await Watch.findById(match.watchId);
         try {
+            console.log("\nLe tableau" + JSON.stringify(tab));
             tab = await getPatternInfos(result.dialId, 'dial', tab);
             tab = await getPatternInfos(result.braceletId, 'bracelet', tab);
             tab = await getWidth(result.braceletId, tab);
@@ -92,19 +93,22 @@ async function getPatternInfos(componentId, componentName, tab) {
     } else {
         patternId = await Bracelet.findById(componentId, 'patternId');
     }
-    const colorId = await Pattern.findById(patternId, 'mainColor');
-    tab = await getColor(colorId, tab, componentName);
+    const colorId = await Pattern.findById(patternId.patternId, 'mainColor');
+    tab = await getColor(colorId.mainColor, componentName, tab);
+    console.log("ça passseeeeee");
     const typeId = await Pattern.findById(patternId, 'patternType');
     tab = await getType(typeId, tab, componentName);
     return tab;
 }
 
-async function getColor(colorId, tab, componentName) {
+async function getColor(colorId, componentName, tab) {
     if(componentName === 'housing') {
         colorId = await Housing.findById(colorId, 'colorId');
     }
     const colorLabel = await Color.findById(colorId, 'label');
     if(componentName === 'dial') {
+        console.log("\nrentre dans le dial de getColor\n");
+        console.log(JSON.stringify(tab));
         tab.dial.color[colorLabel] += 1;
     } else if(componentName === 'bracelet'){
         tab.bracelet.color[colorLabel] += 1;

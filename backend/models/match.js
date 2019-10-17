@@ -10,7 +10,7 @@ const matchSchema = mongoose.Schema({
         ref: User,
         required: true
     },
-    wacthId: {
+    watchId: {
         type: mongoose.Schema.ObjectId,
         ref: Watch,
         required: true

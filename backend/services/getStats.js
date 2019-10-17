@@ -35,8 +35,8 @@ let statistics = {
 };
 
 exports.getStats = async (req, res) => {
-    this.initTabs();
-    let matches = await Match.getAllMatches();
+    initTabs();
+    let matches = await Match.getAllMatchesFunc();
     matches.forEach(match => {
         statistics = BuildTab(match, statistics);
     });

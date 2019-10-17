@@ -7,6 +7,6 @@ const WatchController = require("../controllers/watch");
 const router = express.Router();
 
 router.post('/create', WatchController.create);
-router.get('/getOne', WatchController.getOne);
+router.get('/getOne/:id', WatchController.getOne);
 
 module.exports = router;
