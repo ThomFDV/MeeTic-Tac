@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".HomeActivity">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_height="150dp"
+        android:src="@drawable/logoaugarde" />
+
+    <Button
+        android:id="@+id/buttonConnexion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginRight="20dp"
+        android:background="#2E2B2B"
+        android:text="Connexion"
+        android:textColor="#FCFCFC" />
+
+    <Button
+        android:id="@+id/buttonInscription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginRight="20dp"
+        android:background="#2E2B2B"
+        android:text="Inscription"
+        android:textColor="#FCFCFC" />
+
+
+</LinearLayout>

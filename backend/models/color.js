@@ -1,10 +1,12 @@
 'use strict';
+
 const mongoose = require("mongoose");
 
 const colorSchema = mongoose.Schema({
     label: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     price: {
         type: Number,
