@@ -8,6 +8,7 @@ const TypeController = require('../controllers/type');
 const MaterialController = require('../controllers/material');
 const Dial = require('../models/dial');
 const Bracelet = require('../models/bracelet');
+const Housing = require('../models/housing');
 const Color = require('../models/color');
 const Type = require('../models/type');
 const Material = require('../models/material');
@@ -27,12 +28,12 @@ exports.getNextMatch = (userId, matches) => {
     this.initTabs(userId);
     matches.forEach(match => {
         if(match.isLiked) {
-            this.buildTabs(match, likedWatchs[userId]);
+            likedWatchs[userId] = this.buildTabs(match, likedWatchs[userId]);
         } else {
-            this.buildTabs(match, dislikedWatchs[userId]);
+            dislikedWatchs[userId] = this.buildTabs(match, dislikedWatchs[userId]);
         }
     });
-    //@TODO calculer score
+
 };
 
 function initTabs(userId) {
@@ -128,6 +129,15 @@ function getPatternInfos(componentId, componentName, tab) {
 }
 
 function getColor(colorId, tab, componentName) {
+    if(componentName === 'housing') {
+        colorId = Housing.findById(colorId, (err, id) => {
+            if(err) {
+                console.log(err);
+                return null;
+            }
+            return id;
+        });
+    }
     const colorLabel = Color.findById(colorId, 'label', (err, label) => {
         if(err) {
             console.log(err);
@@ -188,7 +198,7 @@ function getMaterial(braceletId, tab) {
         }
         return id;
     });
-    const materialLabel = Width.findById(materialId, 'label', (err, label) => {
+    const materialLabel = Material.findById(materialId, 'label', (err, label) => {
         if(err) {
             console.log(err);
             return null;
@@ -197,4 +207,104 @@ function getMaterial(braceletId, tab) {
     });
     tab.bracelet.material[materialLabel] += 1;
     return tab;
+}
+
+exports.getWatch = (watchId) => {
+    const watch = {};
+    const result = Watch.findById(watchId, err => {
+        if(err) {
+            console.log('Raté');
+            return tab;
+        }
+    });
+    const dialPatternId = Dial.findById(result.dialId, 'patternId', (err, id) => {
+        if(err) {
+            console.log(err);
+            return null;
+        }
+        return id;
+    });
+    const braceletPatternId = Bracelet.findById(result.braceletId, 'patternId', (err, id) => {
+        if(err) {
+            console.log(err);
+            return null;
+        }
+        return id;
+    });
+    const housingColorId = Housing.findById(result.housingId, 'colorId', (err, id) => {
+        if(err) {
+            console.log(err);
+            return null;
+        }
+        return id;
+    });
+    watch.housing.color = Color.findById(housingColorId, 'label', (err, label) => {
+        if(err) {
+            console.log(err);
+            return null;
+        }
+        return label;
+    });
+    watch.bracelet.width = Width.findById(result.braceletId, 'label', (err, label) => {
+        if(err) {
+            console.log(err);
+            return null;
+        }
+        return label;
+    });
+    watch.bracelet.material = Material.findById(result.braceletId, 'label', (err, label) => {
+        if(err) {
+            console.log(err);
+            return null;
+        }
+        return label;
+    });
+    const temp = [braceletPatternId, dialPatternId];
+    for(let i = 0; i < temp.length; i++) {
+        const ids = Pattern.findById(temp[i], 'mainColor, patternType', (err, val) => {
+            if(err) {
+                console.log(err);
+                return null;
+            }
+            return val;
+        });
+        const colorLabel = Color.findById(ids.mainColor, 'label', (err, label) => {
+            if(err) {
+                console.log(err);
+                return null;
+            }
+            return label;
+        });
+        const typeLabel = Type.findById(ids.patternType, 'label', (err, label) => {
+            if(err) {
+                console.log(err);
+                return null;
+            }
+            return label;
+        });
+        if(i == 0) {
+            watch.bracelet.color = colorLabel;
+            watch.bracelet.type = typeLabel;
+        } else {
+            watch.dial.color = colorLabel;
+            watch.dial.type = typeLabel;
+        }
+    }
+    return watch;
+}
+
+function defineColorScore(tLikes, tDislikes) {
+
+}
+
+function defineTypeScore(tLikes, tDislikes) {
+
+}
+
+function defineWidthScore(tLikes, tDislikes) {
+
+}
+
+function defineMaterialScore(tLikes, tDislikes) {
+
 }
