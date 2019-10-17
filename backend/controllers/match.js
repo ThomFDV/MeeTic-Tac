@@ -2,6 +2,8 @@
 
 const mongoose = require("mongoose");
 const Match = require("../models/match");
+const Watch = require("../models/watch");
+const WatchController = require("../controllers/watch");
 const NextMatchService = require("../services/getNextMatch");
 
 exports.create = async (req, res) => {
@@ -58,9 +60,15 @@ exports.resetMatches = async (req, res) => {
 }
 
 exports.getNextMatch = async (req, res) => {
-    const result = this.create(req, res);
-    if(result.status != 201) return result;
-    const nextWatch = NextMatchService.getNextMatch(req.user._id, this.getAllUserMatchesT(req, res));
+    // if (!req.body.watchId) {
+        let watch = undefined;
+        watch = await Watch.find({});
+        watch = await WatchController.getOne(watch[0]._id);
+        return res.status(203).json(watch);
+    // }
+    // const result = this.create(req, res);
+    // if(result.status != 201) return result;
+    // const nextWatch = NextMatchService.getNextMatch(req.user._id, this.getAllUserMatchesT(req, res));
 }
 
 exports.getAllMatches = async (req, res) => {

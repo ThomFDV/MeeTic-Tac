@@ -14,6 +14,8 @@ const typeRoutes = require("./routes/type");
 const patternRoutes = require("./routes/pattern");
 const housingRoutes = require("./routes/housing");
 const dialRoutes = require("./routes/dial");
+const matchRoutes = require("./routes/match");
+const watchRoutes = require("./routes/watch");
 
 const app = express();
 
@@ -54,5 +56,7 @@ app.use("/type", typeRoutes);
 app.use("/pattern", patternRoutes);
 app.use("/housing", housingRoutes);
 app.use("/dial", dialRoutes);
+app.use("/match", matchRoutes);
+app.use("/watch", watchRoutes);
 
 module.exports = app;

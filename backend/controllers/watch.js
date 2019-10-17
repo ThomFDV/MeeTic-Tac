@@ -3,15 +3,15 @@
 const mongoose = require("mongoose");
 const Watch = require("../models/watch");
 const Bracelet = require('../models/bracelet');
-const Dial = require('../models/bracelet');
-const Housing = require('../models/bracelet');
+const Dial = require('../models/dial');
+const Housing = require('../models/housing');
 
 exports.create = async (req, res) => {
     const name = mongoose.mongo.ObjectId(req.body.name);
     const braceletId = mongoose.mongo.ObjectId(req.body.bracelet);
     const dialId = mongoose.mongo.ObjectId(req.body.dial);
     const housingId = mongoose.mongo.ObjectId(req.body.housing);
-    const description = mongoose.mongo.ObjectId(req.body.description);
+    const description = req.body.description;
 
     try {
         const watch = new Watch({
@@ -39,37 +39,22 @@ exports.create = async (req, res) => {
 //     });
 // }
 
-exports.getOne = async (req, res) => {
-    const watchId = mongoose.mongo.ObjectId(req.body.watch);
+exports.getOne = async (watchId) => {
     try {
-        const watch = Watch.findById(watchId, (err, result) => {
-            if (err) return null;
-            return result;
-        });
-        if (result != null) {
-            const braceletUrl = Bracelet.findById(watch.braceletId, (err, url) => {
-                if (err) return null;
-                return url.imgUrl;
-            });
-            const dialUrl = Dial.findById(watch.dialId, (err, url) => {
-                if (err) return null;
-                return url.imgUrl;
-            });
-            const housingUrl = Housing.findById(watch.housingId, (err, url) => {
-                if (err) return null;
-                return url.imgUrl;
-            });
-            return res.status(200).json({
-                braceletUrl,
-                dialUrl,
-                housingUrl,
+        const watch = await Watch.findById(watchId);
+        if (watch != null) {
+            const braceletUrl = await Bracelet.findById(watch.braceletId, 'imgUrl');
+            const dialUrl = await Dial.findById(watch.dialId, 'imgUrl');
+            const housingUrl = await Housing.findById(watch.housingId, 'imgUrl');
+            return {
+                braceletUrl: braceletUrl.imgUrl,
+                dialUrl: dialUrl.imgUrl,
+                housingUrl: housingUrl.imgUrl,
                 description: watch.description
-            });
+            };
         }
-        return res.status(404).json({
-            message: 'La montre n\'a pas été trouvée'
-        });
+        return null;
     } catch(err) {
-        return res.status(400).json(err);
+        return err;
     }
 }

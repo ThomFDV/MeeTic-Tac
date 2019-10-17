@@ -8,6 +8,5 @@ const router = express.Router();
 
 router.post('/create', WatchController.create);
 router.get('/getOne', WatchController.getOne);
-router.delete('/reset', passport.authenticate('jwt', { session: false }), WatchController.resetMatches);
 
 module.exports = router;

@@ -6,7 +6,7 @@ const Dial = require("../models/dial");
 exports.create = async (req, res) => {
     const name = req.body.name;
     const patternId = mongoose.mongo.ObjectId(req.body.pattern);
-    const imgUrl = mongoose.mongo.ObjectId(req.body.imgUrl);
+    const imgUrl = req.body.imgUrl;
 
     try {
         const dial = new Dial({
