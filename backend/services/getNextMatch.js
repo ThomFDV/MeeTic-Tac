@@ -24,23 +24,55 @@ exports.matchesArePresent = (userId) => {
     return false;
 };
 
-exports.getNextMatch = (userId, matches) => {
-    initTabs(userId);
-    matches.forEach(match => {
+exports.getNextMatch = async (userId, matches) => {
+    await initTabs(userId);
+    matches.forEach(async match => {
         if(match.isLiked) {
-            likedWatchs[userId] = this.buildTabs(match, likedWatchs[userId]);
+            likedWatchs[userId] = await buildTabs(match, likedWatchs[userId]);
         } else {
-            dislikedWatchs[userId] = this.buildTabs(match, dislikedWatchs[userId]);
+            dislikedWatchs[userId] = await buildTabs(match, dislikedWatchs[userId]);
         }
     });
+    console.log(likedWatchs[userId] + "\n=========liked===========\n");
+    console.log(dislikedWatchs[userId] + "\n=========disliked===========\n");
     generateQuery(likedWatchs[userId], dislikedWatchs[userId]);
 };
 
-function initTabs(userId) {
+async function initTabs(userId) {
     const colors = ColorController.getAllT();
     const types = TypeController.getAllT();
     const materials = MaterialController.getAllT();
     const widths = WidthController.getAllT();
+    likedWatchs[userId] = {
+        housing: {
+            color: {}
+        },
+        dial: {
+            color: {},
+            type: {}
+        },
+        bracelet: {
+            color: {},
+            type: {},
+            width: {},
+            material: {}
+        }
+    };
+    dislikedWatchs[userId] = {
+        housing: {
+            color: {}
+        },
+        dial: {
+            color: {},
+            type: {}
+        },
+        bracelet: {
+            color: {},
+            type: {},
+            width: {},
+            material: {}
+        }
+    };
     colors.forEach(c => {
         likedWatchs[userId].housing.color[c] = 0;
         likedWatchs[userId].bracelet.color[c] = 0;
@@ -65,7 +97,7 @@ function initTabs(userId) {
     });
 }
 
-exports.buildTabs = async (match, tab) => {
+async function buildTabs(match, tab) {
     try {
         const result = await Watch.findById(match.watchId);
         try {
@@ -119,7 +151,7 @@ async function getColor(colorId, componentName, tab) {
 }
 
 async function getType(typeId, tab, componentName) {
-    const typeLabel = await Type.findById(colorId, 'label');
+    const typeLabel = await Type.findById(typeId, 'label');
     if(componentName === 'dial') {
         tab.dial.type[typeLabel] += 1;
     } else {
@@ -136,7 +168,7 @@ async function getWidth(braceletId, tab) {
 }
 
 async function getMaterial(braceletId, tab) {
-    const materialId = await Bracelet.findById(materialId, 'materialId');
+    const materialId = await Bracelet.findById(braceletId, 'materialId');
     const materialLabel = await Material.findById(materialId, 'label');
     tab.bracelet.material[materialLabel] += 1;
     return tab;
@@ -176,13 +208,20 @@ async function generateQuery(likes, dislikes) {
     const braceletWidth = defineWidthScore(likes.bracelet.width, dislikes.bracelet.width);
     const braceletMaterial = defineMaterialScore(likes.bracelet.material, dislikes.bracelet.material);
     let patterns = {};
-    patterns.dial = Pattern.find({mainColor})
+    patterns.dial = Pattern.find({mainColor});
 }
 
 function defineColorScore(tLikes, tDislikes) {
     const colorsList = ColorController.getAllT();
-    let totalLikes = tLikes.reduce((acc, curr) => acc + curr);
-    let totalDislikes = tDislikes.reduce((acc, curr) => acc + curr);
+    let totalLikes = 0;
+    for(let color in tLikes) {
+        totalLikes += color;
+    }
+    // let totalDislikes = tDislikes.reduce((acc, curr) => acc + curr);
+    let totalDislikes = 0;
+    for(let color in tDislikes) {
+        totalDislikes += color;
+    }
     if(totalLikes == 0) totalLikes = 1;
     if(totalDislikes == 0) totalDislikes = 1;
     let ratios = [];
