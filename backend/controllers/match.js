@@ -62,3 +62,17 @@ exports.getNextMatch = async (req, res) => {
     if(result.status != 201) return result;
     const nextWatch = NextMatchService.getNextMatch(req.user._id, this.getAllUserMatchesT(req, res));
 }
+
+exports.getAllMatches = async (req, res) => {
+    let matchesMap = {};
+
+    Match.find({}, (err, matches) => {
+        matches.forEach(match => {
+            matchesMap.push({
+                watchId: match.watchId,
+                isLiked: match.isLiked
+            });
+        });
+    });
+    return matchesMap;
+}
