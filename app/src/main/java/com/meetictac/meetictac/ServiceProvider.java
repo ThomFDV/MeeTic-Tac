@@ -1,4 +1,4 @@
 package com.meetictac.meetictac;
 
-public class InscripionModel {
+public class ServiceProvider {
 }
