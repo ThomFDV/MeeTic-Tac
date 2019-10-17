@@ -6,6 +6,7 @@ const cors = require("cors");
 
 const colorRoutes = require("./routes/color");
 const userRoutes = require("./routes/user");
+const eventRoutes = require("./routes/event");
 const widthRoutes = require("./routes/width");
 const materialRoutes = require("./routes/material");
 const braceletRoutes = require("./routes/bracelet");
@@ -44,6 +45,7 @@ app.use(cors());
 // });
 
 app.use("/user", userRoutes);
+app.use("/event", eventRoutes);
 app.use("/width", widthRoutes);
 app.use("/material", materialRoutes);
 app.use("/bracelet", braceletRoutes);
