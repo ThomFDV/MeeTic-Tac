@@ -23,7 +23,7 @@ exports.create = async (req, res) => {
     }
 };
 
-function getAllT() {
+exports.getAllT = () => {
     let typesMap = [];
     Type.find({}, (err, types) => {
         types.forEach(type => {

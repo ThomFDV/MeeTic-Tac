@@ -23,7 +23,7 @@ exports.create = async (req, res) => {
     }
 };
 
-function getAllT() {
+exports.getAllT = () => {
     let colorsMap = [];
     Color.find({}, (err, colors) => {
         colors.forEach(color => {

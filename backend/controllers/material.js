@@ -21,7 +21,7 @@ exports.create = async (req, res) => {
     }
 };
 
-function getAllT() {
+exports.getAllT = () => {
     let materialsMap = [];
     Material.find({}, (err, materials) => {
        materials.forEach(material => {

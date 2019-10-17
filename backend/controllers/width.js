@@ -21,7 +21,7 @@ exports.create = async (req, res) => {
     }
 };
 
-function getAllT() {
+exports.getAllT = () => {
     let widthMap = [];
     Width.find({}, (err, widths) => {
        widths.forEach(width => {
