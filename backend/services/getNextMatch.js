@@ -209,6 +209,18 @@ function getMaterial(braceletId, tab) {
     return tab;
 }
 
+function defineColorScore(tLikes, tDislikes) {
+    const colorsList = ColorController.getAllT();
+    let totalLikes = tLikes.reduce((acc, curr) => acc + curr);
+    let totalDislikes = tDislikes.reduce((acc, curr) => acc + curr);
+    if(totalLikes == 0) totalLikes = 1;
+    if(totalDislikes == 0) totalDislikes = 1;
+    let ratios = [];
+    colorsList.forEach(color => {
+        ratios[color] = ((tLikes[color] * 100) / totalLikes) - ((tDislikes[color] * 100) / totalDislikes)
+    });
+}
+
 exports.getWatch = (watchId) => {
     const watch = {};
     const result = Watch.findById(watchId, err => {
@@ -291,10 +303,6 @@ exports.getWatch = (watchId) => {
         }
     }
     return watch;
-}
-
-function defineColorScore(tLikes, tDislikes) {
-
 }
 
 function defineTypeScore(tLikes, tDislikes) {
