@@ -53,46 +53,12 @@ public class LoginActivity extends AppCompatActivity {
         valider.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isEmailValid(email.getText().toString())) {
-                    Toast.makeText(LoginActivity.this, "Email invalide", Toast.LENGTH_SHORT).show();
-                } else if (!isPasswordValid(password.getText().toString())) {
-                    Toast.makeText(LoginActivity.this, "Mot de passe invalide", Toast.LENGTH_SHORT).show();
-                } else {
-                    Log.d("testConnexion", "good Else");
-                    //ICI A L'AIDEEEEEEE
-                    UserDTO newUser = new UserDTO("","", email.getText().toString(), password.getText().toString());
-
-                    ServiceProvider.getInstance().addUser(new ServiceProvider.Listener<UserModel>() {
-                        @Override
-                        public void onSuccess(UserModel data) {
-                            Log.d("testConnexion", data.toString());
-                            Intent intent = new Intent(LoginActivity.this, MatchActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                            startActivity(intent);
-
-                        }
-
-                        @Override
-                        public void onError(Throwable t) {
-                            Toast.makeText(LoginActivity.this, "NUUUUL", Toast.LENGTH_LONG).show();
-                            Log.d("testConnexion", t.toString());
-                        }
-                    }, newUser);
-
-                }
+                Intent i = new Intent(LoginActivity.this, MatchActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(i);
             }
         });
 
-
     }
-
-    private boolean isEmailValid(String email) {
-        return true;
-    }
-
-    private boolean isPasswordValid(String password) {
-        return true;
-    }
-
 
 }

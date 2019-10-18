@@ -13,29 +13,109 @@
         android:layout_height="150dp"
         android:src="@drawable/logoaugarde" />
 
-    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_marginTop="50dp">
+
+        <TextView
+            android:id="@+id/titre"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:textAlignment="center"/>
+
+        <TextView
+            android:id="@+id/desciprion"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:textAlignment="center"/>
+
+        <TextView
+            android:id="@+id/location"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:textAlignment="center"/>
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:textAlignment="center"/>
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_marginTop="30dp">
+
+        <TextView
+            android:id="@+id/titre2"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:textAlignment="center"/>
+
+        <TextView
+            android:id="@+id/desciprion2"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:textAlignment="center"/>
+
+        <TextView
+            android:id="@+id/location2"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:textAlignment="center"/>
+
+        <TextView
+            android:id="@+id/date2"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:textAlignment="center"/>
+
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/ajouter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Ajouter un événement"
+        android:background="#2E2B2B"
+        android:textColor="#FCFCFC"
+        ></Button>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="150dp">
+
+    </LinearLayout>
+
+
+    <android.support.constraint.ConstraintLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="?attr/actionBarSize">
+        android:paddingTop="?attr/actionBarSize"
+        >
+
 
         <android.support.design.widget.BottomNavigationView
             android:id="@+id/nav_view"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="0dp"
-            android:layout_marginEnd="0dp"
             android:background="?android:attr/windowBackground"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:menu="@menu/bottom_nav_menu" />
-
-        <ListView
-            android:id="@+id/item"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
 
     </android.support.constraint.ConstraintLayout>
 

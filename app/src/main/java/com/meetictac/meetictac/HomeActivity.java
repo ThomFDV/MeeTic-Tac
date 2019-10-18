@@ -21,6 +21,7 @@ public class HomeActivity extends AppCompatActivity {
         buttonConnexion.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 Intent i = new Intent(HomeActivity.this, LoginActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(i);
             }
         });

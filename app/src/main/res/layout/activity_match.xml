@@ -21,30 +21,52 @@
             android:foregroundGravity="center_horizontal"
             android:src="@drawable/logoaugarde" />
 
-        <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="400dp"
+            android:layout_marginTop="50dp"
             android:background="@color/cardview_light_background"
-            android:orientation="vertical"
+            android:orientation="horizontal"
             tools:context=".MatchActivity">
 
             <ImageView
                 android:id="@+id/activity_match_iv"
-                android:layout_width="250dp"
-                android:layout_height="wrap_content"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
                 android:layout_marginTop="50dp"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginLeft="30dp"
+                android:src="@drawable/montre"
+                app:layout_constraintEnd_toStartOf="@id/activity_match_iv2"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/activity_match_iv2"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_marginTop="50dp"
+                android:src="@drawable/cadranblancbleupetrole"
+                app:layout_constraintEnd_toStartOf="@id/activity_match_iv3"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/activity_match_iv3"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_marginTop="50dp"
+                android:layout_marginRight="30dp"
+                android:src="@drawable/boitieracier"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+
 
             <TextView
                 android:id="@+id/activity_match_description_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="40dp"
                 android:layout_marginEnd="20dp"
                 android:gravity="center"
                 android:lines="2"
@@ -76,14 +98,6 @@
                 app:layout_constraintStart_toEndOf="@+id/activity_match_dislike_button"
                 app:layout_constraintTop_toBottomOf="@+id/activity_match_description_tv" />
 
-            <TextView
-                android:id="@+id/activity_match_empty_tv"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/blanc"
-                android:gravity="center"
-                android:textColor="@color/colorAccent"
-                android:textSize="30sp" />
 
         </android.support.constraint.ConstraintLayout>
 

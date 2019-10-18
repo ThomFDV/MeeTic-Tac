@@ -32,6 +32,7 @@ console.log(req.body);
 };
 
 exports.login = (req, res) => {
+
     let user = req.user;
 
     let token = generateToken(user);

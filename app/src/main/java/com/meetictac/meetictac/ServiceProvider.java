@@ -1,5 +1,6 @@
 package com.meetictac.meetictac;
 
+import android.app.usage.UsageEvents;
 import android.util.Log;
 
 import com.meetictac.meetictac.ui.MeetictacService;
@@ -78,6 +79,62 @@ public class ServiceProvider {
             }
         });
     }
+
+    public void checkUser(final Listener<UserModel> listener, final  UserDTO newUser) {
+        meetictacService.checkUser(newUser).enqueue(new Callback<UserDTO>() {
+           @Override public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
+
+               UserDTO userDTO = response.body();
+               Log.d("USERlogin", response.body().toString());
+
+               UserModel userModel = new UserModel(userDTO.getFirstname(), userDTO.getLastname(), userDTO.getEmail(), userDTO.getPassword());
+               listener.onSuccess(userModel);
+           }
+
+           @Override public void onFailure(Call<UserDTO> call, Throwable t) {
+               t.printStackTrace();
+           }
+       });
+    }
+
+    public void matchWatch(final Listener<MatchModel> listener) {
+        meetictacService.matchWatch().enqueue(new Callback<MatchDTO>() {
+
+            @Override public void onResponse(Call<MatchDTO> call, Response<MatchDTO> response) {
+                Log.d("testData", response.body().toString());
+
+                MatchDTO weaponDTOList = response.body();
+                MatchModel weaponList = new MatchModel(weaponDTOList.getBraceletUrl(), weaponDTOList.getDialUrl(), weaponDTOList.getHousingUrl(), weaponDTOList.getDescription());
+
+                listener.onSuccess(weaponList);
+            }
+
+            @Override public void onFailure(Call<MatchDTO> call, Throwable t) {
+                listener.onError(t);
+            }
+        });
+
+    }
+
+    public void allEvent(final Listener<List<EventModel>> listener) {
+        meetictacService.allEvent().enqueue(new Callback<List<EventDTO>>() {
+            @Override
+            public void onResponse(Call<List<EventDTO>> call, Response<List<EventDTO>> response) {
+
+                List<EventDTO> eventDTOList = response.body();
+                List<EventModel> eventList = EventMapper.map(eventDTOList);
+
+
+                listener.onSuccess(eventList);
+            }
+
+            @Override
+            public void onFailure(Call<List<EventDTO>> call, Throwable t) {
+
+            }
+        });
+    }
+
 
 
     public interface Listener<T> {

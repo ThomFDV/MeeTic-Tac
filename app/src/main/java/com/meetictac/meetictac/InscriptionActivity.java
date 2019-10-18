@@ -75,40 +75,6 @@ public class InscriptionActivity extends AppCompatActivity {
     }
 
 
-    void inscriptionValid() {
-        if (!isEmailValid(email.getText().toString())) {
-            Toast.makeText(this, "Email incorrect", Toast.LENGTH_SHORT).show();
-        } else if (!isUsernameValid(firstname.getText().toString()) || firstname.getText().toString().length() < 2) {
-            Toast.makeText(this, "Nom d'utilisateur incorrect", Toast.LENGTH_SHORT).show();
-        }else if (!isUsernameValid(lastname.getText().toString()) || lastname.getText().toString().length() < 2) {
-            Toast.makeText(this, "Prénom d'utilisateur incorrect", Toast.LENGTH_SHORT).show();
-        } else if (password.getText().toString().length() < 10) {
-            Toast.makeText(this, "Mot de passe trop court", Toast.LENGTH_SHORT).show();
-        } else {
-            Log.d("testConnexion", "good Else");
-            UserDTO newUser = new UserDTO(firstname.getText().toString(), lastname.getText().toString(), email.getText().toString(), password.getText().toString());
-
-            ServiceProvider.getInstance().addUser(new ServiceProvider.Listener<UserModel>() {
-                @Override
-                public void onSuccess(UserModel data) {
-                    Log.d("testConnexion", data.toString());
-                    Intent intent = new Intent(InscriptionActivity.this, MatchActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    startActivity(intent);
-
-                }
-
-                @Override
-                public void onError(Throwable t) {
-                    Toast.makeText(InscriptionActivity.this, "NUUUUL", Toast.LENGTH_LONG).show();
-                    Log.d("testConnexion", t.toString());
-                }
-            }, newUser);
-
-
-        }
-    }
-
     private boolean isEmailValid(String email) {
         String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
 

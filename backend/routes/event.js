@@ -6,11 +6,11 @@ const EventController = require("../controllers/event");
 
 const router = express.Router();
 
-router.post('/create', passport.authenticate('jwt', { session: false }), EventController.createEvent);
-router.post('/go/:id', passport.authenticate('jwt', { session: false }), EventController.addParticipant);
-router.put('/leave/:id', passport.authenticate('jwt', { session: false }), EventController.rmvParticipant);
-router.get('/', passport.authenticate('jwt', { session: false }), EventController.getEvents);
-router.get('/:id', passport.authenticate('jwt', { session: false }), EventController.getEventById);
-router.delete('/:id', passport.authenticate('jwt', { session: false }), EventController.rmvEventById);
+router.post('/create', EventController.createEvent);
+router.post('/go/:id', EventController.addParticipant);
+router.put('/leave/:id', EventController.rmvParticipant);
+router.get('/', EventController.getEvents);
+router.get('/:id', EventController.getEventById);
+router.delete('/:id', EventController.rmvEventById);
 
 module.exports = router;
