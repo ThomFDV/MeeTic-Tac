@@ -72,12 +72,12 @@ async function initTabs(userId) {
         }
     };
     colors.forEach(c => {
-        likedWatchs[userId].housing.color[c] = 0;
-        likedWatchs[userId].bracelet.color[c] = 0;
-        likedWatchs[userId].dial.color[c] = 0;
-        dislikedWatchs[userId].housing.color[c] = 0;
-        dislikedWatchs[userId].bracelet.color[c] = 0;
-        dislikedWatchs[userId].dial.color[c] = 0;
+        likedWatchs[userId].housing.color[c.label] = 0;
+        likedWatchs[userId].bracelet.color[c.label] = 0;
+        likedWatchs[userId].dial.color[c.label] = 0;
+        dislikedWatchs[userId].housing.color[c.label] = 0;
+        dislikedWatchs[userId].bracelet.color[c.label] = 0;
+        dislikedWatchs[userId].dial.color[c.label] = 0;
     });
     types.forEach(t => {
         likedWatchs[userId].bracelet.type[t] = 0;
@@ -93,13 +93,13 @@ async function initTabs(userId) {
         likedWatchs[userId].bracelet.width[w] = 0;
         dislikedWatchs[userId].bracelet.width[w] = 0;
     });
+    console.log(likedWatchs[userId]);
 }
 
 exports.buildTabs = async (match, tab) => {
     try {
         const result = await Watch.findById(match.watchId);
         try {
-            console.log("\nLe tableau" + JSON.stringify(tab));
             tab = await getPatternInfos(result.dialId, 'dial', tab);
             console.log("\n11111111111111111\n" + JSON.stringify(tab) + "\n===============\n");
             tab = await getPatternInfos(result.braceletId, 'bracelet', tab);
@@ -128,19 +128,23 @@ async function getPatternInfos(componentId, componentName, tab) {
     }
     const colorId = await Pattern.findById(patternId.patternId, 'mainColor');
     tab = await getColor(colorId.mainColor, componentName, tab);
-    const typeId = await Pattern.findById(patternId, 'patternType');
+    const typeId = await Pattern.findById(patternId.patternId, 'patternType');
     tab = await getType(typeId, tab, componentName);
     return tab;
 }
 
 async function getColor(colorId, componentName, tab) {
+    let color_id = undefined;
     if(componentName === 'housing') {
         //TODO Voir ici car pour housing colorLabel est a null
-        colorId = await Housing.findById(colorId, 'colorId');
-        colorId = await colorId.colorId;
-        console.log(colorId + "============zqfazefffffffffffqsv=z==========");
+        color_id = await Housing.findById(colorId, 'colorId');
+        color_id = color_id.colorId;
+        console.log(color_id + "============zqfazefffffffffffqsv=z==========");
+        colorId = color_id;
     }
+    console.log("COLOR_ID : " + colorId + ", componentName: " + componentName);
     const colorLabel = await Color.findById(colorId, 'label');
+    console.log("COLOR_LABEL : " + colorLabel + ", componentName: " + componentName);
     if(componentName === 'dial') {
         tab.dial.color[colorLabel.label] += 1;
         console.log(tab.dial.color);
@@ -149,31 +153,32 @@ async function getColor(colorId, componentName, tab) {
     } else {
         console.log(colorLabel);
         tab.housing.color[colorLabel.label] += 1;
+        console.log(JSON.stringify(tab));
     }
     return tab;
 }
 
 async function getType(typeId, tab, componentName) {
-    const typeLabel = await Type.findById(typeId, 'label');
+    const typeLabel = await Type.findById(typeId.patternType, 'label');
     if(componentName === 'dial') {
-        tab.dial.type[typeLabel] += 1;
+        tab.dial.type[typeLabel.label] += 1;
     } else {
-        tab.bracelet.type[typeLabel] += 1;
+        tab.bracelet.type[typeLabel.label] += 1;
     }
     return tab;
 }
 
 async function getWidth(braceletId, tab) {
     const widthId = await Bracelet.findById(braceletId, 'widthId');
-    const widthLabel = await Width.findById(widthId, 'label');
-    tab.bracelet.width[widthLabel] += 1;
+    const widthLabel = await Width.findById(widthId.widthId, 'label');
+    tab.bracelet.width[widthLabel.label] += 1;
     return tab;
 }
 
 async function getMaterial(braceletId, tab) {
     const materialId = await Bracelet.findById(braceletId, 'materialId');
-    const materialLabel = await Material.findById(materialId, 'label');
-    tab.bracelet.material[materialLabel] += 1;
+    const materialLabel = await Material.findById(materialId.materialId, 'label');
+    tab.bracelet.material[materialLabel.label] += 1;
     return tab;
 }
 
