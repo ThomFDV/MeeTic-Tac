@@ -7,7 +7,8 @@ const MatchController = require("../controllers/match");
 const GetStats = require("../services/getStats");
 const router = express.Router();
 
-router.post("/create", MatchController.create);
+router.post("/create", passport.authenticate('jwt', { session: false }), MatchController.create);
+router.get("/all", passport.authenticate('jwt', { session: false }), MatchController.getAllMatches);
 router.get("/stats", passport.authenticate('jwt', { session: false }), GetStats.getStats);
 router.post("/next", MatchController.getNextMatch);
 router.delete('/reset', passport.authenticate('jwt', { session: false }), MatchController.resetMatches);

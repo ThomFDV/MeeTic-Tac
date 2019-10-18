@@ -7,7 +7,8 @@ const WatchController = require("../controllers/watch");
 const NextMatchService = require("../services/getNextMatch");
 
 exports.create = async (req, res) => {
-    const userId = mongoose.mongo.ObjectId(req.body.userId);
+    console.log(req.user);
+    const userId = mongoose.mongo.ObjectId(req.user._id);
     const watchId = mongoose.mongo.ObjectId(req.body.watchId);
     const isLiked = req.body.isLiked;
 
@@ -72,15 +73,11 @@ exports.getNextMatch = async (req, res) => {
 }
 
 exports.getAllMatches = async (req, res) => {
-    let matchesMap = {};
+    let matches = await Match.find();
+    return res.status(200).json(matches);
+}
 
-    Match.find({}, (err, matches) => {
-        matches.forEach(match => {
-            matchesMap.push({
-                watchId: match.watchId,
-                isLiked: match.isLiked
-            });
-        });
-    });
-    return matchesMap;
+exports.getAllMatchesFunc = async () => {
+    let matches = await Match.find();
+    return matches;
 }
