@@ -37,9 +37,11 @@ let statistics = {
 exports.getStats = async (req, res) => {
     await initTabs();
     let matches = await Match.getAllMatchesFunc();
-    matches.forEach(match => {
-        statistics = BuildTab(match, statistics);
-    });
+    for(let match of matches) {
+        statistics = await BuildTab(match, statistics);
+        console.log("\n\n============================= Final :\n" + JSON.stringify(statistics) + "\n=====================================\n\n")
+    };
+    console.log("\n\n============================= Final 2 :\n" + JSON.stringify(statistics) + "\n=====================================\n\n")
     return res.status(200).json(statistics);
 }
 
