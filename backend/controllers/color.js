@@ -23,12 +23,17 @@ exports.create = async (req, res) => {
     }
 };
 
-exports.getAllT = () => {
+exports.getAllT = async () => {
     let colorsMap = [];
-    Color.find({}, (err, colors) => {
-        colors.forEach(color => {
-            colorsMap.push(color.label);
-        });
+    const colors = await Color.find({});
+    colors.forEach(color => {
+        colorsMap.push(color.label);
     });
-    return colorsMap;
+    return colors;
+}
+
+exports.getAll = async () => {
+    let colorsMap = [];
+    const colors = await Color.find({}, 'label');
+    return colors;
 }

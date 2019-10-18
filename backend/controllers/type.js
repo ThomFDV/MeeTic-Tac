@@ -23,12 +23,17 @@ exports.create = async (req, res) => {
     }
 };
 
-exports.getAllT = () => {
+exports.getAllT = async () => {
     let typesMap = [];
-    Type.find({}, (err, types) => {
-        types.forEach(type => {
-            typesMap.push(type.label);
-        });
+    const types = await Type.find({});
+    types.forEach(type => {
+        typesMap.push(type.label);
     });
+    return typesMap;
+}
+
+exports.getAll = async () => {
+    let typesMap = [];
+    typesMap = await Type.find({}, 'label');
     return typesMap;
 }

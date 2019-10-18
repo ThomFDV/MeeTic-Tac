@@ -21,12 +21,17 @@ exports.create = async (req, res) => {
     }
 };
 
-exports.getAllT = () => {
+exports.getAllT = async () => {
     let materialsMap = [];
-    Material.find({}, (err, materials) => {
-       materials.forEach(material => {
-           materialsMap.push(material.label);
-       }) ;
-    });
+    const materials = await Material.find({});
+    materials.forEach(material => {
+        materialsMap.push(material.label);
+    }) ;
+    return materialsMap;
+}
+
+exports.getAll = async () => {
+    let materialsMap = [];
+    materialsMap = await Material.find({}, 'label');
     return materialsMap;
 }

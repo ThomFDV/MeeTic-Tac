@@ -81,3 +81,49 @@ exports.getAllMatchesFunc = async () => {
     let matches = await Match.find();
     return matches;
 }
+
+exports.test = async (req, res) => {
+    if (!req.body.watchId) {
+        let watch = undefined;
+        watch = await Watch.find({});
+        watch = await WatchController.getOne(watch[0]._id);
+        return res.status(203).json(watch);
+    }
+    // const result = this.create(req, res);
+    // if(result.status != 201) return result;
+    console.log("ID user: " + req.body.userId.toString());
+    const nextWatch = await NextMatchService.getNextMatch(req.body.userId.toString(), await getAllUserMatchesTest(req.body.userId));
+    console.log("TEST FUNC1:\n------------------\n" + nextWatch);
+    if(nextWatch === undefined || nextWatch === null) {
+        return res.status(400).json({
+            message: "Raté",
+            err: 'err'
+        });
+    }
+    console.log("TEST FUNC:\n------------------\n" + nextWatch);
+    return res.status(200).send(nextWatch);
+}
+
+async function getAllUserMatchesTest(userId) {
+    let matchesMap = [];
+    userId = mongoose.mongo.ObjectId(userId);
+    // const user_Id = mongoose.mongo.ObjectId(req.user._id);
+    const matches = await Match.find({userId: userId});
+    // console.log(matches);
+    matches.forEach(match => {
+        matchesMap.push({
+            watchId: match.watchId,
+            isLiked: match.isLiked
+        });
+    });
+    console.log("matches size: " + matchesMap.length + "\n--------------");
+    return matchesMap;
+}
+
+exports.getRandom = async () => {
+    let watch = undefined;
+    watch = await Watch.find({});
+    watch = await WatchController.getOneById(watch[0]._id);
+    console.log(watch);
+    return watch;
+}

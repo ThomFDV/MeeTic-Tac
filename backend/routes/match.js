@@ -11,6 +11,7 @@ router.post("/create", passport.authenticate('jwt', { session: false }), MatchCo
 router.get("/all", passport.authenticate('jwt', { session: false }), MatchController.getAllMatches);
 router.get("/stats", passport.authenticate('jwt', { session: false }), GetStats.getStats);
 router.post("/next", MatchController.getNextMatch);
+router.post("/test", MatchController.test);
 router.delete('/reset', passport.authenticate('jwt', { session: false }), MatchController.resetMatches);
 
 module.exports = router;

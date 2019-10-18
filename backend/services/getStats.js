@@ -35,23 +35,40 @@ let statistics = {
 };
 
 exports.getStats = async (req, res) => {
-    initTabs();
+    await initTabs();
     let matches = await Match.getAllMatchesFunc();
-    matches.forEach(match => {
-        statistics = BuildTab(match, statistics);
-    });
+    for(let match of matches) {
+        statistics = await BuildTab(match, statistics);
+        console.log("\n\n============================= Final :\n" + JSON.stringify(statistics) + "\n=====================================\n\n")
+    };
+    console.log("\n\n============================= Final 2 :\n" + JSON.stringify(statistics) + "\n=====================================\n\n")
     return res.status(200).json(statistics);
 }
 
-function initTabs() {
-    const colors = ColorController.getAllT();
-    const types = TypeController.getAllT();
-    const materials = MaterialController.getAllT();
-    const widths = WidthController.getAllT();
+async function initTabs() {
+    const colors = await ColorController.getAllT();
+    const types = await TypeController.getAllT();
+    const materials = await MaterialController.getAllT();
+    const widths = await WidthController.getAllT();
+    statistics = {
+        housing: {
+            color: {}
+        },
+        dial: {
+            color: {},
+            type: {}
+        },
+        bracelet: {
+            color: {},
+            type: {},
+            width: {},
+            material: {}
+        }
+    };
     colors.forEach(c => {
-        statistics.housing.color[c] = 0;
-        statistics.bracelet.color[c] = 0;
-        statistics.dial.color[c] = 0;
+        statistics.housing.color[c.label] = 0;
+        statistics.bracelet.color[c.label] = 0;
+        statistics.dial.color[c.label] = 0;
         
     });
     types.forEach(t => {

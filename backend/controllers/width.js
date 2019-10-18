@@ -21,12 +21,17 @@ exports.create = async (req, res) => {
     }
 };
 
-exports.getAllT = () => {
+exports.getAllT = async () => {
     let widthMap = [];
-    Width.find({}, (err, widths) => {
-       widths.forEach(width => {
-           widthMap.push(width.label);
-       });
+    const widths = await Width.find({});
+    widths.forEach(width => {
+        widthMap.push(width.label);
     });
+    return widthMap;
+}
+
+exports.getAll = async () => {
+    let widthMap = [];
+    widthMap = await Width.find({}, 'label');
     return widthMap;
 }
