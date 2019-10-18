@@ -92,14 +92,16 @@ exports.test = async (req, res) => {
     // const result = this.create(req, res);
     // if(result.status != 201) return result;
     console.log("ID user: " + req.body.userId.toString());
-    const nextWatch = NextMatchService.getNextMatch(req.body.userId.toString(), await getAllUserMatchesTest(req.body.userId));
-    if(nextWatch.value === undefined) {
+    const nextWatch = await NextMatchService.getNextMatch(req.body.userId.toString(), await getAllUserMatchesTest(req.body.userId));
+    console.log("TEST FUNC1:\n------------------\n" + nextWatch);
+    if(nextWatch === undefined || nextWatch === null) {
         return res.status(400).json({
             message: "Raté",
-            err: nextWatch.err
+            err: 'err'
         });
     }
-    return res.status(200).json(nextWatch.value);
+    console.log("TEST FUNC:\n------------------\n" + nextWatch);
+    return res.status(200).send(nextWatch);
 }
 
 async function getAllUserMatchesTest(userId) {
@@ -116,4 +118,12 @@ async function getAllUserMatchesTest(userId) {
     });
     console.log("matches size: " + matchesMap.length + "\n--------------");
     return matchesMap;
+}
+
+exports.getRandom = async () => {
+    let watch = undefined;
+    watch = await Watch.find({});
+    watch = await WatchController.getOneById(watch[0]._id);
+    console.log(watch);
+    return watch;
 }

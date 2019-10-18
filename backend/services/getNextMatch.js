@@ -2,6 +2,7 @@
 
 const mongoose = require('mongoose');
 const MatchController = require('../controllers/match');
+const WatchController = require('../controllers/watch');
 const ColorController = require('../controllers/color');
 const WidthController = require('../controllers/width');
 const TypeController = require('../controllers/type');
@@ -34,7 +35,7 @@ exports.getNextMatch = async (userId, matches) => {
         }
     };
     console.log("TABLO: " + JSON.stringify(likedWatchs[userId]));
-    const nextWatch = await generateQuery(likedWatchs[userId], dislikedWatchs[userId]);
+    return await generateQuery(likedWatchs[userId], dislikedWatchs[userId]);
 };
 
 async function initTabs(userId) {
@@ -248,8 +249,18 @@ async function generateQuery(likes, dislikes) {
     }, '_id');
     console.log("Ids du dial" + ids.dial);
     if(ids.bracelet.length != 0 || ids.dial.length != 0 || ids.housing.length != 0) {
-        return 0;
+        return await MatchController.getRandom();
     }
+    const watch = await Watch.find({
+        braceletId : {
+            $in: ids.bracelet
+        }, dialId : {
+            $in: ids.dial
+        }, housingId : {
+            $in: ids.housing
+        }
+    }, '_id');
+    return await WatchController.getOneById(watch._id);
 }
 
 async function defineColorScore(tLikes, tDislikes) {

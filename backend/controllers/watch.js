@@ -64,3 +64,29 @@ exports.getOne = async (req, res) => {
         return res.status(400).json(err);
     }
 }
+
+exports.getOneById = async (watchId) => {
+    try {
+        const watch = await Watch.findById(watchId);
+        if (watch != null) {
+            const braceletUrl = await Bracelet.findById(watch.braceletId, 'imgUrl');
+            const dialUrl = await Dial.findById(watch.dialId, 'imgUrl');
+            const housingUrl = await Housing.findById(watch.housingId, 'imgUrl');
+            return {
+                braceletUrl: braceletUrl.imgUrl,
+                dialUrl: dialUrl.imgUrl,
+                housingUrl: housingUrl.imgUrl,
+                description: watch.description
+            };
+            // return res.status(200).json({
+            //     braceletUrl: braceletUrl.imgUrl,
+            //     dialUrl: dialUrl.imgUrl,
+            //     housingUrl: housingUrl.imgUrl,
+            //     description: watch.description
+            // });
+        }
+        return null;
+    } catch(err) {
+        return null;
+    }
+}
