@@ -26,14 +26,15 @@ exports.matchesArePresent = (userId) => {
 
 exports.getNextMatch = async (userId, matches) => {
     await initTabs(userId);
-    matches.forEach(async match => {
+    for(let match of matches) {
         if(match.isLiked) {
             likedWatchs[userId] = await this.buildTabs(match, likedWatchs[userId]);
         } else {
             dislikedWatchs[userId] = await this.buildTabs(match, dislikedWatchs[userId]);
         }
-    });
-    generateQuery(likedWatchs[userId], dislikedWatchs[userId]);
+    };
+    console.log("TABLO: " + JSON.stringify(likedWatchs[userId]));
+    const nextWatch = await generateQuery(likedWatchs[userId], dislikedWatchs[userId]);
 };
 
 async function initTabs(userId) {
@@ -93,7 +94,6 @@ async function initTabs(userId) {
         likedWatchs[userId].bracelet.width[w] = 0;
         dislikedWatchs[userId].bracelet.width[w] = 0;
     });
-    console.log(likedWatchs[userId]);
 }
 
 exports.buildTabs = async (match, tab) => {
@@ -101,11 +101,8 @@ exports.buildTabs = async (match, tab) => {
         const result = await Watch.findById(match.watchId);
         try {
             tab = await getPatternInfos(result.dialId, 'dial', tab);
-            console.log("\n11111111111111111\n" + JSON.stringify(tab) + "\n===============\n");
             tab = await getPatternInfos(result.braceletId, 'bracelet', tab);
-            console.log("\n22222222222222222\n" + JSON.stringify(tab) + "\n===============\n");
             tab = await getWidth(result.braceletId, tab);
-            console.log("\n33333333333333333\n" + JSON.stringify(tab) + "\n===============\n");
             tab = await getMaterial(result.braceletId, tab);
             console.log("\n444444444444444444\n" + JSON.stringify(tab) + "\n===============\n");
             tab = await getColor(result.housingId, 'housing', tab);
@@ -204,24 +201,63 @@ exports.getWatch = async (watchId) => {
 }
 
 async function generateQuery(likes, dislikes) {
-    const housingColor = defineColorScore(likes.housing.color, dislikes.housing.color);
-    const dialColor = defineColorScore(likes.dial.color, dislikes.dial.color);
-    const dialType = defineTypeScore(likes.dial.type, dislikes.dial.type);
-    const braceletColor = defineColorScore(likes.bracelet.color, dislikes.bracelet.color);
-    const braceletType = defineTypeScore(likes.bracelet.type, dislikes.bracelet.type);
-    const braceletWidth = defineWidthScore(likes.bracelet.width, dislikes.bracelet.width);
-    const braceletMaterial = defineMaterialScore(likes.bracelet.material, dislikes.bracelet.material);
+    const housingColor = await defineColorScore(likes.housing.color, dislikes.housing.color);
+    const dialColor = await defineColorScore(likes.dial.color, dislikes.dial.color);
+    const dialType = await defineTypeScore(likes.dial.type, dislikes.dial.type);
+    const braceletColor = await defineColorScore(likes.bracelet.color, dislikes.bracelet.color);
+    const braceletType = await defineTypeScore(likes.bracelet.type, dislikes.bracelet.type);
+    const braceletWidth = await defineWidthScore(likes.bracelet.width, dislikes.bracelet.width);
+    const braceletMaterial = await defineMaterialScore(likes.bracelet.material, dislikes.bracelet.material);
     let patterns = {};
-    patterns.dial = Pattern.find({mainColor});
+    let ids = {};
+    patterns.dial = await Pattern.find({
+        mainColor : {
+            $in: dialColor
+        }, patternType: {
+            $in: dialType
+        }
+    }, '_id');
+    patterns.bracelet = await Pattern.find({
+        mainColor : {
+            $in: braceletColor
+        }, patternType: {
+            $in: braceletType
+        }
+    }, '_id');
+    console.log("Patterns du bracelet" + patterns.bracelet);
+    ids.housing = await Housing.find({
+        colorId : {
+            $in: housingColor
+        }
+    }, '_id');
+    console.log("Ids du housing" + ids.housing);
+    ids.bracelet = await Bracelet.find({
+        patternId : {
+            $in: patterns.bracelet
+        }, widthId: {
+            $in: braceletWidth
+        }, materialId: {
+            $in: braceletMaterial
+        }
+    }, '_id');
+    console.log("Ids de bracelet" + ids.bracelet);
+    ids.dial = await Dial.find({
+        patternId : {
+            $in: patterns.dial
+        }
+    }, '_id');
+    console.log("Ids du dial" + ids.dial);
+    if(ids.bracelet.length != 0 || ids.dial.length != 0 || ids.housing.length != 0) {
+        return 0;
+    }
 }
 
 async function defineColorScore(tLikes, tDislikes) {
-    const colorsList = await ColorController.getAllT();
+    const colorsList = await ColorController.getAll();
     let totalLikes = 0;
     for(let color in tLikes) {
         totalLikes += color;
     }
-    // let totalDislikes = tDislikes.reduce((acc, curr) => acc + curr);
     let totalDislikes = 0;
     for(let color in tDislikes) {
         totalDislikes += color;
@@ -232,27 +268,34 @@ async function defineColorScore(tLikes, tDislikes) {
     let i = 0;
     colorsList.forEach(c => {
         ratios[i] = {
-            value: ((tLikes[c] * 100) / totalLikes) - ((tDislikes[c] * 100) / totalDislikes),
-            color: c
+            value: ((tLikes[c.label] * 100) / totalLikes) - ((tDislikes[c] * 100) / totalDislikes),
+            color: c.label,
+            id: c._id
         };
         i += 1;
     });
     ratios.sort((a, b) => a.value - b.value);
-    let colorsQuery = [ratios[0].color, ratios[1].color];
-    i = undefined;
-    while(i === undefined) {
-        let rand = Math.floor(Math.random() * Math.floor(colorsList.length));
+    let colorsQuery = [ratios[0], ratios[1]];
+    i = -1;
+    while(i !== undefined) {
+        let rand = Math.floor(Math.random() * Math.floor(ratios.length));
         i = colorsQuery.find(el => {
-            return el === colorsList[rand];
+            return el.id === ratios[rand].id;
         });
-        i = i === undefined ? undefined : rand;
+        if(i === undefined) {
+            i = rand;
+            break;
+        }
     }
-    colorsQuery.push(colorsList[i]);
+    colorsQuery.push(ratios[i]);
+    colorsQuery = colorsQuery.map(el => {
+        return el.id;
+    });
     return colorsQuery;
 }
 
 async function defineTypeScore(tLikes, tDislikes) {
-    const typesList = await TypeController.getAllT();
+    const typesList = await TypeController.getAll();
     let totalLikes = 0;
     for(let type in tLikes) {
         totalLikes += type;
@@ -267,26 +310,33 @@ async function defineTypeScore(tLikes, tDislikes) {
     let i = 0;
     typesList.forEach(t => {
         ratios[i++] = {
-            value: ((tLikes[t] * 100) / totalLikes) - ((tDislikes[t] * 100) / totalDislikes),
-            type: t
+            value: ((tLikes[t.label] * 100) / totalLikes) - ((tDislikes[t.label] * 100) / totalDislikes),
+            type: t.label,
+            id: t._id
         }
     });
     ratios.sort((a, b) => a.value - b.value);
-    let typesQuery = [ratios[0].type, ratios[1].type];
-    i = undefined;
-    while(i === undefined) {
-        let rand = Math.floor(Math.random() * Math.floor(typesList.length));
+    let typesQuery = [ratios[0], ratios[1]];
+    i = -1;
+    while(i !== undefined) {
+        let rand = Math.floor(Math.random() * Math.floor(ratios.length));
         i = typesQuery.find(el => {
-            return el === typesList[rand];
+            return el.id === ratios[rand].id;
         });
-        i = i === undefined ? undefined : rand;
+        if(i === undefined) {
+            i = rand;
+            break;
+        }
     }
-    typesQuery.push(typesList[i]);
+    typesQuery.push(ratios[i]);
+    typesQuery = typesQuery.map(el => {
+        return el.id;
+    });
     return typesQuery;
 }
 
 async function defineWidthScore(tLikes, tDislikes) {
-    const widthsList = await WidthController.getAllT();
+    const widthsList = await WidthController.getAll();
     let totalLikes = 0;
     for(let type in tLikes) {
         totalLikes += type;
@@ -301,26 +351,33 @@ async function defineWidthScore(tLikes, tDislikes) {
     let i = 0;
     widthsList.forEach(w => {
         ratios[i++] = {
-            value: ((tLikes[w] * 100) / totalLikes) - ((tDislikes[w] * 100) / totalDislikes),
-            width: w
+            value: ((tLikes[w.label] * 100) / totalLikes) - ((tDislikes[w.label] * 100) / totalDislikes),
+            width: w.label,
+            id: w._id
         }
     });
     ratios.sort((a, b) => a.value - b.value);
-    let widthsQuery = [ratios[0].width, ratios[1].width];
-    i = undefined;
-    while(i === undefined) {
-        let rand = Math.floor(Math.random() * Math.floor(widthsList.length));
+    let widthsQuery = [ratios[0]];
+    i = -1;
+    while(i !== undefined) {
+        let rand = Math.floor(Math.random() * Math.floor(ratios.length));
         i = widthsQuery.find(el => {
-            return el === widthsList[rand];
+            return el.id === ratios[rand].id;
         });
-        i = i === undefined ? undefined : rand;
+        if(i === undefined) {
+            i = rand;
+            break;
+        }
     }
-    widthsQuery.push(widthsList[i]);
+    widthsQuery.push(ratios[i]);
+    widthsQuery = widthsQuery.map(el => {
+        return el.id;
+    });
     return widthsQuery;
 }
 
 async function defineMaterialScore(tLikes, tDislikes) {
-    const materialsList = await MaterialController.getAllT();
+    const materialsList = await MaterialController.getAll();
     let totalLikes = 0;
     for(let type in tLikes) {
         totalLikes += type;
@@ -335,20 +392,27 @@ async function defineMaterialScore(tLikes, tDislikes) {
     let i = 0;
     materialsList.forEach(m => {
         ratios[i++] = {
-            value: ((tLikes[m] * 100) / totalLikes) - ((tDislikes[m] * 100) / totalDislikes),
-            material: m
+            value: ((tLikes[m.label] * 100) / totalLikes) - ((tDislikes[m.label] * 100) / totalDislikes),
+            material: m.label,
+            id: m._id
         }
     });
     ratios.sort((a, b) => a.value - b.value);
-    let materialsQuery = [ratios[0].material, ratios[1].material];
-    i = undefined;
-    while(i === undefined) {
-        let rand = Math.floor(Math.random() * Math.floor(materialsList.length));
+    let materialsQuery = [ratios[0]];
+    i = -1;
+    while(i !== undefined) {
+        let rand = Math.floor(Math.random() * Math.floor(ratios.length));
         i = materialsQuery.find(el => {
-            return el === materialsList[rand];
+            return el.id === ratios[rand].id;
         });
-        i = i === undefined ? undefined : rand;
+        if(i === undefined) {
+            i = rand;
+            break;
+        }
     }
-    materialsQuery.push(materialsList[i]);
+    materialsQuery.push(ratios[i]);
+    materialsQuery = materialsQuery.map(el => {
+        return el.id;
+    });
     return materialsQuery;
 }

@@ -29,3 +29,9 @@ exports.getAllT = async () => {
     });
     return widthMap;
 }
+
+exports.getAll = async () => {
+    let widthMap = [];
+    widthMap = await Width.find({}, 'label');
+    return widthMap;
+}

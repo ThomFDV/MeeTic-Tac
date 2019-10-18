@@ -31,3 +31,9 @@ exports.getAllT = async () => {
     });
     return colors;
 }
+
+exports.getAll = async () => {
+    let colorsMap = [];
+    const colors = await Color.find({}, 'label');
+    return colors;
+}

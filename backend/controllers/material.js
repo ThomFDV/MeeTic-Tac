@@ -29,3 +29,9 @@ exports.getAllT = async () => {
     }) ;
     return materialsMap;
 }
+
+exports.getAll = async () => {
+    let materialsMap = [];
+    materialsMap = await Material.find({}, 'label');
+    return materialsMap;
+}

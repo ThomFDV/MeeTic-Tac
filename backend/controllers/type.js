@@ -31,3 +31,9 @@ exports.getAllT = async () => {
     });
     return typesMap;
 }
+
+exports.getAll = async () => {
+    let typesMap = [];
+    typesMap = await Type.find({}, 'label');
+    return typesMap;
+}
