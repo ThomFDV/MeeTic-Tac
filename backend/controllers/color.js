@@ -29,5 +29,5 @@ exports.getAllT = async () => {
     colors.forEach(color => {
         colorsMap.push(color.label);
     });
-    return colorsMap;
+    return colors;
 }

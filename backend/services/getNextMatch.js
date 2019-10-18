@@ -101,8 +101,11 @@ exports.buildTabs = async (match, tab) => {
         try {
             console.log("\nLe tableau" + JSON.stringify(tab));
             tab = await getPatternInfos(result.dialId, 'dial', tab);
+            console.log("\n11111111111111111\n" + JSON.stringify(tab) + "\n===============\n");
             tab = await getPatternInfos(result.braceletId, 'bracelet', tab);
+            console.log("\n22222222222222222\n" + JSON.stringify(tab) + "\n===============\n");
             tab = await getWidth(result.braceletId, tab);
+            console.log("\n33333333333333333\n" + JSON.stringify(tab) + "\n===============\n");
             tab = await getMaterial(result.braceletId, tab);
             tab = await getColor(result.housingId, 'housing', tab);
         } catch(err) {
@@ -132,16 +135,20 @@ async function getPatternInfos(componentId, componentName, tab) {
 
 async function getColor(colorId, componentName, tab) {
     if(componentName === 'housing') {
+        //TODO Voir ici car pour housing colorLabel est a null
         colorId = await Housing.findById(colorId, 'colorId');
+        colorId = await colorId.colorId;
+        console.log(colorId + "============zqfazefffffffffffqsv=z==========");
     }
     const colorLabel = await Color.findById(colorId, 'label');
     if(componentName === 'dial') {
-        console.log(JSON.stringify(tab));
-        tab.dial.color[colorLabel] += 1;
+        tab.dial.color[colorLabel.label] += 1;
+        console.log(tab.dial.color);
     } else if(componentName === 'bracelet'){
-        tab.bracelet.color[colorLabel] += 1;
+        tab.bracelet.color[colorLabel.label] += 1;
     } else {
-        tab.housing.color[colorLabel] += 1;
+        console.log(colorLabel);
+        tab.housing.color[colorLabel.label] += 1;
     }
     return tab;
 }
